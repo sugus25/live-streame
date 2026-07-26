@@ -1,0 +1,64 @@
+#EXTM3U url=""
+
+#EXTINF:-1 group-title="ช่องสารคดี" tvg-logo="https://cdn.imgchest.com/files/5944e14c1b6f.webp",สำรวจโลก
+#EXTVLCOPT:http-referrer=https://atmflix.live/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36
+https://cdn2.stream.atmflix.live/atmflixlive/samrujlok/playlist.m3u8
+
+#EXTINF:-1 tvg-id="Samrujlok.th" tvg-name="SAMRUJLOK" tvg-logo="http://103.114.203.129:8080/images/bc783a2a3ef5946723e07c4474ed79be.jpg" group-title="ช่องสารคดี",SAMRUJLOK
+http://103.114.203.129:8080/toom/12345/15670
+
+#EXTINF:-1 group-title="ช่องสารคดี" tvg-logo="https://cdn.imgchest.com/files/5944e14c1b6f.webp",สำรวจโลก
+#EXTVLCOPT:http-referrer=https://atmflix.live/
+
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36
+https://dov.streaming-api.xyz/kicksballcom/samrujlok/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9Ny8yNi8yMDI2IDk6MzM6MDQgQU0maGFzaF92YWx1ZT04S1BkcE5JMExjSVgra0NVT2M1Y3FBPT0mdmFsaWRtaW51dGVzPTIw|referer=https://kicksball.com/
+
+#EXTINF:-1 group-title="ช่องสารคดี" tvg-logo="",
+#EXTVLCOPT:http-referrer=
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36
+
+#EXTINF:-1 group-title="ช่องสารคดี" tvg-logo="https://www.av-subthai.cc/wp-content/uploads/2026/01/pred220pl.webp",DDFF-053 การให้คำปรึกษาเรื่องเพศสัมพันธ์ทางปาก: คำแนะนำทางเพศสำหรับเด็กสาวเก็บตัวและหนีเรียน - ชิโอริ มามิยะ
+#EXTVLCOPT:http-referrer=
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36
+https://ezycdn.stream/playlist-73lu3lrn-master.m3u8
+
+
+#EXTINF:-1 tvg-id="" tvg-name="โคนัน วันพีซ" tvg-logo="http://103.114.203.129:8080/images/5963ec11c666ea07f9c1d1a9db3ba547.jpg" group-title="ช่องพรีเมียม พิเศษ",โคนัน วันพีซ
+http://103.114.203.129:8080/toom/12345/15674
+#EXTINF:-1 tvg-id="TRFILMHD.th" tvg-name="TR-FILM 1 FHD" tvg-logo="http://103.114.203.129:8080/images/3490d9c0074b737940eb3f45cbbfde3a.jpg" group-title="ช่องภาพยนตร์ ",TR-FILM 1 FHD
+http://103.114.203.129:8080/toom/12345/67
+#EXTINF:-1 tvg-id="TRFILMHD2.th" tvg-name="TR-FILM 2 FHD" tvg-logo="http://103.114.203.129:8080/images/1cf48d071be5a5c0af1aaf4b78b33e3f.png" group-title="ช่องภาพยนตร์ ",TR-FILM 2 FHD
+http://103.114.203.129:8080/toom/12345/79
+
+#EXTINF:-1 group-title="ช่องสารคดี" tvg-logo="",
+#EXTVLCOPT:http-referrer=
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36
+
+
+#EXTINF:-1 group-title="ช่องสารคดี" tvg-logo="",
+#EXTVLCOPT:http-referrer=
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36
+
+
+#EXTINF:-1 group-title="ช่องสารคดี" tvg-logo="",
+#EXTVLCOPT:http-referrer=
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36
+
+
+#EXTINF:-1 group-title="ช่องสารคดี" tvg-logo="",
+#EXTVLCOPT:http-referrer=
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36
+
+
+#EXTINF:-1 group-title="ช่องสารคดี" tvg-logo="",
+#EXTVLCOPT:http-referrer=
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36
+
+#EXTINF:-1 tvg-id="TRMOVIEHITS.th" tvg-name="True Movie Hits" tvg-logo="http://103.114.203.129:8080/images/ad4de50d1ba14f9709c3f0d61dbb82fc.jpg" group-title="ช่องภาพยนตร์ ",True Movie Hits
+http://103.114.203.129:8080/toom/12345/66
+http://103.114.203.129:8080/toom/12345/66
+http://103.114.203.129:8080/toom/12345/15670
+
+
+http://103.114.203.129:8080/toom/12345/15669
