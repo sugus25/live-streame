@@ -1,4 +1,4 @@
-#EXTM3U url=""
+#EXTM3U url="https://raw.githubusercontent.com/sugus25/live-streame/refs/heads/main/m3u8-test.m3u"
 
 #EXTINF:-1 group-title="ช่องสารคดี" tvg-logo="https://cdn.imgchest.com/files/5944e14c1b6f.webp",สำรวจโลก
 #EXTVLCOPT:http-referrer=https://atmflix.live/
@@ -8,11 +8,12 @@ https://cdn2.stream.atmflix.live/atmflixlive/samrujlok/playlist.m3u8
 #EXTINF:-1 tvg-id="Samrujlok.th" tvg-name="SAMRUJLOK" tvg-logo="http://103.114.203.129:8080/images/bc783a2a3ef5946723e07c4474ed79be.jpg" group-title="ช่องสารคดี",SAMRUJLOK
 http://103.114.203.129:8080/toom/12345/15670
 
-#EXTINF:-1 group-title="ช่องสารคดี" tvg-logo="https://cdn.imgchest.com/files/5944e14c1b6f.webp",สำรวจโลก
-#EXTVLCOPT:http-referrer=https://atmflix.live/
 
-#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Linux; Android 12; Chromecast) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36
+#EXTINF:-1 tvg-id="Samrujlok.th" tvg-name="SAMRUJLOK" tvg-logo="http://103.114.203.129:8080/images/bc783a2a3ef5946723e07c4474ed79be.jpg" group-title="ช่องสารคดี",SAMRUJLOK
 https://dov.streaming-api.xyz/kicksballcom/samrujlok/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9Ny8yNi8yMDI2IDk6MzM6MDQgQU0maGFzaF92YWx1ZT04S1BkcE5JMExjSVgra0NVT2M1Y3FBPT0mdmFsaWRtaW51dGVzPTIw|referer=https://kicksball.com/
+
+#EXTINF:-1 tvg-id="Samrujlok.th" tvg-name="SAMRUJLOK" tvg-logo="http://103.114.203.129:8080/images/bc783a2a3ef5946723e07c4474ed79be.jpg" group-title="ช่องสารคดี",SAMRUJLOK
+https://dov.streaming-api.xyz/kicksballcom/samrujlok/playlist.m3u8?wmsAuthSign=c2VydmVyX3RpbWU9Ny8yNi8yMDI2IDk6MzM6MDQgQU0maGFzaF92YWx1ZT04S1BkcE5JMExjSVgra0NVT2M1Y3FBPT0mdmFsaWRtaW51dGVzPTIw
 
 #EXTINF:-1 group-title="ช่องสารคดี" tvg-logo="",
 #EXTVLCOPT:http-referrer=
