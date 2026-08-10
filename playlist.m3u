@@ -1,5 +1,4 @@
-const channels = `
-#EXTM3U
+#EXTM3U url="https://raw.githubusercontent.com/sugus25/live-streame/refs/heads/main/playlist.m3u"
 #EXTINF:-1 tvg-logo="https://goodiptv.site/images/tv/tCz5uOf1XPW1RLITmCX46urCatF7NbI20250830165328Mono1.jpg" group-title="Top Channel",MonoMax 1
 https://hls.iptv-th.workers.dev/live/3912/playlist.m3u8
 #EXTINF:-1 tvg-logo="https://goodiptv.site/images/tv/2YYftpZ0wnosCHE1EIgZf5ktfrimdGJ20250830165343Mono2.jpg" group-title="Top Channel",MonoMax 2
@@ -400,57 +399,3 @@ https://hls.iptv-th.workers.dev/live/2879/playlist.m3u8
 https://hls.iptv-th.workers.dev/live/2878/playlist.m3u8
 #EXTINF:-1 tvg-logo="https://goodiptv.site/images/tv/DZsJQnXS8EGlBiSwDEGVn2GY9QRndQ420240418211852DLTV15.jpg" group-title="การศึกษา Learn",DLTV 15 มัธยมศึกษาปีที่ 6
 https://hls.iptv-th.workers.dev/live/2877/playlist.m3u8
-
-`;
-
-const channelList = document.getElementById('channelList');
-const player = document.getElementById('videoPlayer');
-
-function parseChannels(data) {
-    const lines = data.split('\n');
-    let currentChannel = null;
-
-    lines.forEach(line => {
-        if (line.startsWith('#EXTINF:')) {
-            const metadata = line.match(/tvg-logo="([^"]*)".*?,(.+)/);
-            if (metadata) {
-                const [_, logo, name] = metadata;
-                currentChannel = { name, logo };
-            }
-        } else if (line.trim() && currentChannel) {
-            currentChannel.url = line.trim();
-            addChannelToList(currentChannel);
-            currentChannel = null;
-        }
-    });
-}
-
-function addChannelToList(channel) {
-    const li = document.createElement('li');
-    li.classList.add('channel-item');
-    li.innerHTML = `
-        <img class="channel-logo" src="${channel.logo}" alt="${channel.name}" />
-        <span>${channel.name}</span>
-    `;
-    li.onclick = () => {
-        playChannel(channel.url);
-    };
-    channelList.appendChild(li);
-}
-function playChannel(url) {
-    if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(url);
-        hls.attachMedia(videoPlayer);
-        hls.on(Hls.Events.MANIFEST_PARSED, function () {
-            videoPlayer.play();
-        });
-    } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-        videoPlayer.src = url;
-        videoPlayer.play();
-    } else {
-        alert('HLS is not supported in this browser.');
-    }
-}
-// Initialize channel list
-parseChannels(channels);
