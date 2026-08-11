@@ -1,4 +1,4 @@
-#EXTM3u url=""
+#EXTM3U url="https://raw.githubusercontent.com/sugus25/live-streame/refs/heads/main/tonor_tv_playlist.m3u"
           
 #EXTINF:-1 tvg-id="iptv36.tv5" tvg-name="CH 5" tvg-logo="http://103.114.203.129:8080/images/755d01f38f70630aefecc2b5c20a6eca.jpg" group-title="ดิจิตอลทีวี",CH 5
 http://103.114.203.129:8080/toom/12345/56
