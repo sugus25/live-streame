@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPLUS Player — ทีวีดิจิทัล</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.21/dist/hls.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: #0f172a;
+      font-family: 'Prompt', sans-serif;
+      color: #f8fafc;
+      min-height: 100vh;
+    }
+    .page-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 22px;
+      color: #4ade80;
+    }
+    .status-bar {
+      width: 100%;
+      max-width: 900px;
+      padding: 12px 16px;
+      background: #1e293b;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #93c5fd;
+      min-height: 44px;
+      border-left: 4px solid #3b82f6;
+    }
+    .hint-box {
+      width: 100%;
+      max-width: 900px;
+      padding: 10px 14px;
+      background: rgba(251, 191, 36, 0.08);
+      border: 1px solid #f59e0b;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      color: #fcd34d;
+      line-height: 1.5;
+    }
+    .video-wrapper {
+      width: 100%;
+      max-width: 900px;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 4px solid #e2e8f0;
+      margin-bottom: 20px;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    video {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      display: block;
+    }
+    .categories, .channels {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 900px;
+    }
+    .channel-button {
+      background: #1e293b;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 2px solid #475569;
+      cursor: pointer;
+      text-align: center;
+      width: 130px;
+      font-family: 'Prompt', sans-serif;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .channel-button:hover,
+    .channel-button:focus {
+      background: #334155;
+      border-color: #4ade80;
+      transform: translateY(-2px);
+    }
+    .channel-button img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      background: #fff;
+    }
+    .back-btn {
+      background: #3b82f6;
+      border-color: #2563eb;
+    }
+    @media (max-width: 600px) {
+      .channel-button { width: 110px; font-size: 12px; padding: 8px; }
+      .channel-button img { width: 36px; height: 36px; }
+    }
+    
+  </style>
+</head>
+<body>
+
+  <div class="page-wrap">
+    <h1>📺 IPTV Player — ทีวีดิจิทัล</h1>
+
+    <div class="hint-box">
+      ⚠️ ข้อควรทราบ: ลิงก์ช่องทั้งหมดมา
+  .vlc-btn, .ext-btn, .win-btn, .copy-btn { border:0; border-radius:8px; padding:9px 16px; font-size:14px; font-weight:700; color:#fff;}
+  .vlc-btn{background:var(--seven-orange);} 
+  .win-btn{background:#3b82f6;}
+  .copy-btn{background:rgba(255,255,255,0.1); border:1px solid var(--line); font-weight:500;}
+  
+  .vlc-note{padding:12px 20px;font-size:13px;color:var(--muted);background:var(--panel2);border-top:1px solid var(--line);line-height:1.6}
+  .vlc-note b{color:var(--seven-orange)}จากเซิร์ฟเวอร์ภายนอกที่ตั้งค่าป้องกันการเข้าถึง (CORS) เบราว์เซอร์อาจปฏิเสธการเล่น หากแจ้ง "ไม่สามารถโหลดวิดีโอได้" แสดงว่าถูกบล็อก ไม่ใช่โค้ดผิดครับ
+    </div>
+
+    <div class="status-bar" id="statusBar">พร้อมทำงาน — เลือกหมวดหมู่แล้วกดช่องเพื่อเริ่มเล่น</div>
+
+    <div class="video-wrapper">
+      <video id="video" controls playsinline></video>
+    </div>
+
+    <div id="categories" class="categories"></div>
+    <div id="channels" class="channels"></div>
+  </div>
+      <div class="player-bar" id="playerBar">
+      <button class="vlc-btn" id="vlcBtn">🎬 เปิดใน VLC</button>
+      <button class="ext-btn" id="extBtn" style="background:#ea4335;">📱 Google Video</button>
+      <button class="win-btn" id="winBtn">🖥️ เปิดใน yamby</button>
+      <button class="copy-btn" id="copyBtn">📋 คัดลอกลิงก์</button>
+      
+      <div class="trk-wrap" id="audioWrap">
+        <span class="trk-lbl">เสียง</span>
+        <select class="trk" id="audioSel"><option>ต้นฉบับ</option></select>
+      </div>
+      <div class="trk-wrap" id="subWrap">
+        <span class="trk-lbl">ซับไตเติล</span>
+        <select class="trk" id="subSel"><option value="-1">ปิด</option></select>
+      </div>
+    </div>
+    <div class="vlc-note hidden" id="vlcNote"></div>
+    <div id="playerErr" class="perr hidden"></div>
+    <label class="autonext hidden" id="autoNextWrap">
+      <input type="checkbox" id="autoNext" checked=""> เล่นตอนต่อไปอัตโนมัติเมื่อจบ
+    </label>
+    <div id="epList" class="ep-list hidden"></div>
+  </div>
+</div>
+
+
+<script>
+// ==============================================
+// 📂 ข้อมูลหมวดหมู่และช่อง
+// ==============================================
+
+// 📺 หมวด 1: ทีวีดิจิทัล (21 ช่อง)
+const digitalTV = [
+  { name: 'CH 3 HD',     logo: 'https://goodiptv.site/images/tv/1Ervzo24A48KRTrhArja3Oc06IV0oPG20240418191821ch3hd.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1057/playlist.m3u8' },
+  { name: 'CH 7 HD',     logo: 'https://goodiptv.site/images/tv/nZH0LpJZb5OAgfUhp6sVadOvhnZpPh320240418185909ch7hd_(1).jpg', stream: 'https://hls.iptv-th.workers.dev/live/1059/playlist.m3u8' },
+  { name: 'CH 5 HD',     logo: 'https://goodiptv.site/images/tv/hRGNf51OPjUdkTqJUH7F9u7D1ttgBvj20240418185850ch5hd.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1058/playlist.m3u8' },
+  { name: 'True 4 U',    logo: 'https://goodiptv.site/images/tv/dg4cPn0lmuRerdrEXo9a4EohjNtaqqD20240418190115True4u.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1230/playlist.m3u8' },
+  { name: 'PPTV HD',     logo: 'https://goodiptv.site/images/tv/Xh9Vvxt3VDc2AVveQThvrSZPmsNZa8U20240418191253pptvhd.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1011/playlist.m3u8' },
+  { name: 'Amarin TV',   logo: 'https://goodiptv.site/images/tv/C16pIyeDnV9x2R9V4DzDeES2hMsvXu520240418191809amarintvhd.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1018/playlist.m3u8' },
+  { name: 'ONE HD',      logo: 'https://goodiptv.site/images/tv/wK0lnULhkhSZq0C1b4Gm77FOO37rux720240418191350onehd.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1228/playlist.m3u8' },
+  { name: 'GMM 25',      logo: 'https://goodiptv.site/images/tv/p1RBlYTtqPSNeXzfkM0EUCV9oXymdNA20240418190128gmmchannel.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1098/playlist.m3u8' },
+  { name: 'CH 8',        logo: 'https://goodiptv.site/images/tv/KLkKLHsc5TCE9xKr2uhfbKl4E50gTdq20240418191335ch8.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1060/playlist.m3u8' },
+  { name: 'Work Point',  logo: 'https://goodiptv.site/images/tv/dhogVoGwkGXbl41VahO3KQn9X29RnCx20240418190941Workpoint.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1227/playlist.m3u8' },
+  { name: 'MonoMax',     logo: 'https://goodiptv.site/images/tv/3FtzbFnnW69QNPCYBIukhGeLMNnTWlt63d2e530-5999-11f1-9eae-09fe801bd2a9_webp_original.png', stream: 'https://hls.iptv-th.workers.dev/live/1229/playlist.m3u8' },
+  { name: 'MCOT HD',     logo: 'https://goodiptv.site/images/tv/zEllIKsvUq3Rrl9WKbrTfIzanTdcghd20240418191042mcothd.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1010/playlist.m3u8' },
+  { name: 'NBT',         logo: 'https://goodiptv.site/images/tv/B409CUlSj9PWt5j1waqxvv1VLfjFvOL20240418191323nbthd.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1007/playlist.m3u8' },
+  { name: 'Nation 22',   logo: 'https://goodiptv.site/images/tv/rjck1OvG9oIkeWlc5LDWL0tFxGCb4PS20240418192308Nation1.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1006/playlist.m3u8' },
+  { name: 'Thai PBS',    logo: 'https://goodiptv.site/images/tv/RXLAcYA06tQgoZnDsWLY1N4q5jYuA9o20240418191223tpbshd.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1005/playlist.m3u8' },
+  { name: 'Thai Rath',   logo: 'https://goodiptv.site/images/tv/wIvpTVufwuomyCez38RtU10ql6ReqIX20240418191057thairahttvhd.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1004/playlist.m3u8' },
+  { name: 'Top News',    logo: 'https://goodiptv.site/images/tv/sC5Vce9wmuN8MOOQ3tCiA2qQfMRPBss20240418191206Topnews.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1186/playlist.m3u8' },
+  { name: 'T Sport 7',   logo: 'https://goodiptv.site/images/tv/z5heqnnm5MOENredeJKfZC2A2tXpGfe20240418193731tsports7.jpg', stream: 'https://hls.iptv-th.workers.dev/live/2734/playlist.m3u8' },
+  { name: 'รัฐสภา',       logo: 'https://goodiptv.site/images/tv/WQba0HTE8tPWkD7LQQZHIQyQO47fUW120240418191939tptv.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1205/playlist.m3u8' },
+  { name: 'News1',       logo: 'https://goodiptv.site/images/tv/jAysDH1WGtTB9nFzNFQnMrTRvl8Met8news1.png', stream: 'https://hls.iptv-th.workers.dev/live/1206/playlist.m3u8' },
+  { name: 'TNN 16',      logo: 'https://goodiptv.site/images/tv/TOzkL9EBJ7RA81DkRsjF1I77dhjEKwR20240418190014TNN16.jpg', stream: 'https://hls.iptv-th.workers.dev/live/1003/playlist.m3u8' },
+];
+
+// 📖 หมวด 2: สารคดี (14 ช่อง)
+const documentary = [
+  { name: 'History',         logo: 'https://goodiptv.site/images/tv/zdhCLy6UYLJBvB3VBj5NO01mGWWSPcXดาวน์โหลด.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4047/playlist.m3u8' },
+  { name: 'Discovery Asia',  logo: 'https://goodiptv.site/images/tv/rSaQcQYOS8ELvJYkE0C7CtBpaYPawLU20240418210201DiscoveryAsia.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4032/playlist.m3u8' },
+  { name: 'Discovery Channel', logo: 'https://goodiptv.site/images/tv/b6taWX6IAqHpIFdXbppf1AQr2C7RX1V20240418210226Discovery.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4031/playlist.m3u8' },
+  { name: 'BBC Lifestyle',    logo: 'https://goodiptv.site/images/tv/2unFFxeOy3RAUS2qBnFGwZJrmi7mMSV20240418210101BBC_lifestyle.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4030/playlist.m3u8' },
+  { name: 'TLC',             logo: 'https://goodiptv.site/images/tv/xJolPDDjYDiKwCqco8AQlridPRtkAhG20240418210246TLC.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4028/playlist.m3u8' },
+  { name: 'True Explore Wild', logo: 'https://goodiptv.site/images/tv/5AFnK7kDIKJXmvX8TG7pXIp8ztdogaS20240418210353TrueExploreWild.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4027/playlist.m3u8' },
+  { name: 'True Explore LIFE', logo: 'https://goodiptv.site/images/tv/95IkhFButjcnOt0OvrVJFoE5VCmHmfr20240418210412TrueExploreLife.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4026/playlist.m3u8' },
+  { name: 'True Explore SCI', logo: 'https://goodiptv.site/images/tv/ZIv5U9MdjGVSQpjorREQi6093xPyxrO20240418210428TrueExploreSci.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4025/playlist.m3u8' },
+  { name: 'My Sci',          logo: 'https://goodiptv.site/images/tv/frrGRi3NDdm44cQvpdgSRHR8MkSar2M20240418211511MySci.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4024/playlist.m3u8' },
+  { name: 'ของดีประเทศไทย',   logo: 'https://goodiptv.site/images/tv/0P7dMU9RszIrBlm5SIu7LBvu7NbM43C20240418211325KhongDeeThailand.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4023/playlist.m3u8' },
+  { name: 'True ปลูกปัญญา',   logo: 'https://goodiptv.site/images/tv/8ZQYFTSZbqMUgUreIqPXzThToQvSIlK16813190-2248-11ef-857f-891570708cee_webp_original.png', stream: 'https://hls.iptv-th.workers.dev/live/3667/playlist.m3u8' },
+  { name: 'Animal Show',      logo: 'https://goodiptv.site/images/tv/I8dHu0Wu2Wewg6OApRd4RkvepNgpprK20240418211432AnimalShow.jpg', stream: 'https://hls.iptv-th.workers.dev/live/2652/playlist.m3u8' },
+  { name: 'Thai ness',        logo: 'https://goodiptv.site/images/tv/1JZYoEILB5rlyNG9g2Iqz7JFz3aKKqMthainess.png', stream: 'https://hls.iptv-th.workers.dev/live/2650/playlist.m3u8' },
+  { name: 'สำรวจโลก',         logo: 'https://goodiptv.site/images/tv/hwlqMfGYykYbQxa2INjot4HL3974ezW20240418211443SamRujLok.jpg', stream: 'https://hls.iptv-th.workers.dev/live/2648/playlist.m3u8' },
+];
+
+// 🎉 หมวด 3: บันเทิง (17 ช่อง)
+const entertainment = [
+  { name: 'Rock X Stream',    logo: 'https://goodiptv.site/images/tv/xWuYjyjR5YdhWyQw4AvNHNUbKiqJ3XE1772683559_0f8c50f1b772f7d5fef9.jpg', stream: 'http://mooseven.ddns.net:8080/live/test/testm7/37875.m3u8' },
+  { name: 'HBO HD',           logo: 'https://goodiptv.site/images/tv/lXrL81tV2V1VtVVoPSoZkHWQZoYmp5K20240418201334HBO.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4011/playlist.m3u8' },
+  { name: 'HBO Hits',         logo: 'https://goodiptv.site/images/tv/bQ4YS0L57syXFOUGjiqdzifrJ7X39Qh20240418201343HBO_Hits.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4010/playlist.m3u8' },
+  { name: 'HBO Signature',    logo: 'https://goodiptv.site/images/tv/lH5rtdg3ifB47DixMPKcZnA3RPWXq1T20240418201358HBO_Signature.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4009/playlist.m3u8' },
+  { name: 'HBO Family',       logo: 'https://goodiptv.site/images/tv/UmhPkWMoFLtxwNZe3QUVi8bmMI6h9GJ20240418201412HBO_Family.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4008/playlist.m3u8' },
+  { name: 'HBO Cinemax',      logo: 'https://goodiptv.site/images/tv/KnVQV6cQY9cukM79ws1HBDmMTCHq7lk20240418201426cinemax.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4007/playlist.m3u8' },
+  { name: '3BB Asian',        logo: 'https://goodiptv.site/images/tv/PInRNtyLBlktvcbbLcDLVdeJABk2B0W202404182013223BBAsian.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4006/playlist.m3u8' },
+  { name: 'Mono29 Plus',      logo: 'https://goodiptv.site/images/tv/9E8tvDHOw6eafJgizlDC19mY4Y79yWK20240418201217Mono29Plus.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4005/playlist.m3u8' },
+  { name: 'Warner Tv',        logo: 'https://goodiptv.site/images/tv/8nv6Gj7KIoHNUoQlnGzFRmkx28QIbUA20240418201607WBTV.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4004/playlist.m3u8' },
+  { name: 'AXN HD',           logo: 'https://goodiptv.site/images/tv/6oDAFDNO861t2Fan3zZp4tpEy7XlqUD20240418201633AXN.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4003/playlist.m3u8' },
+  { name: 'True Movie Hits',  logo: 'https://goodiptv.site/images/tv/U4ay3mkGw4JliPY1T1dnI8wvh00jumS20240418202419True_MoviesHits.jpg', stream: 'https://hls.iptv-th.workers.dev/live/4000/playlist.m3u8' },
+  { name: 'True Film Asia',   logo: 'https://goodiptv.site/images/tv/wi0UchAkl1soCyVTRq3NxoN3QPUr6k720240418202244True_FilmAsia.jpg', stream: 'https://hls.iptv-th.workers.dev/live/3999/playlist.m3u8' },
+  { name: 'True Thai Film',   logo: 'https://goodiptv.site/images/tv/VGcXZj1a4vopmc4ZHWwrI32AVBk1tDb20240418202437True_Thai_Film.jpg', stream: 'https://hls.iptv-th.workers.dev/live/3998/playlist.m3u8' },
+  { name: 'True Series',      logo: 'https://goodiptv.site/images/tv/cL7v6l6Q6HMSEcrouRbvo6cmlfoE5Ls20240418202230True_Series.jpg', stream: 'https://hls.iptv-th.workers.dev/live/3996/playlist.m3u8' },
+  { name: 'True Film HD',     logo: 'https://goodiptv.site/images/tv/v233B66LWKJDyS4ZrT6CsJeHVSxA14vChatGPT_Image_10_ก.พ._2569_21_25_11.png', stream: 'https://hls.iptv-th.workers.dev/live/4123/playlist.m3u8' },
+  { name: 'True Film HD 2',   logo: 'https://goodiptv.site/images/tv/2OyiZvxJCvD2sC1AzijiJbludMKnDkRChatGPT_Image_10_ก.พ._2569_21_29_37.png', stream: 'https://hls.iptv-th.workers.dev/live/4124/playlist.m3u8' },
+  { name: 'True Asian More',  logo: 'https://goodiptv.site/images/tv/12je7QsNXmVj7OtnlZFJOWzrdfKdbRn20240418202614True_Asian_More.jpg', stream: 'https://hls.iptv-th.workers.dev/live/3995/playlist.m3u8' },
+  { name: 'CCM',              logo: 'https://goodiptv.site/images/tv/RFash764MAXgjDW4OqR1U8dGgmAtsSK20240421154338CCM.jpg', stream: 'https://hls.iptv-th.workers.dev/live/3994/playlist.m3u8' },
+];
+
+// 📋 รวมหมวดหมู่ทั้งหมด
+const categories = [
+  { name: '📺 ทีวีดิจิทัล', channels: digitalTV },
+  { name: '📖 สารคดี', channels: documentary },
+  { name: '🎉 บันเทิง', channels: entertainment },
+];
+
+// ==============================================
+// 🎯 ตัวแปรหลัก
+// ==============================================
+const video = document.getElementById('video');
+const statusBar = document.getElementById('statusBar');
+const categoriesDiv = document.getElementById('categories');
+const channelsDiv = document.getElementById('channels');
+let hls = null;
+
+// ==============================================
+// 📂 แสดงหมวดหมู่
+// ==============================================
+function renderCategories() {
+  categoriesDiv.innerHTML = '';
+  channelsDiv.innerHTML = '';
+
+  categories.forEach((cat) => {
+    const count = cat.channels.length;
+    const btn = document.createElement('div');
+    btn.className = 'channel-button';
+    btn.innerHTML = `<div>${cat.name} (${count} ช่อง)</div>`;
+    btn.onclick = () => renderChannels(cat);
+    categoriesDiv.appendChild(btn);
+  });
+}
+
+// ==============================================
+// 📋 แสดงรายการช่องในหมวดหมู่
+// ==============================================
+function renderChannels(category) {
+  categoriesDiv.innerHTML = '';
+  channelsDiv.innerHTML = '';
+
+  category.channels.forEach((ch, idx) => {
+    const btn = document.createElement('div');
+    btn.className = 'channel-button';
+    btn.innerHTML = `
+      <img src="${ch.logo}" alt="${ch.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/42?text=📺'">
+      <div style="font-size:12px;line-height:1.4">${idx + 1}. ${ch.name}</div>
+    `;
+    btn.onclick = () => playChannel(ch);
+    channelsDiv.appendChild(btn);
+  });
+
+  const backBtn = document.createElement('div');
+  backBtn.className = 'channel-button back-btn';
+  backBtn.innerHTML = '🔙 ย้อนกลับ';
+  backBtn.onclick = renderCategories;
+  channelsDiv.appendChild(backBtn);
+}
+
+// ==============================================
+// ▶️ เล่นช่อง
+// ==============================================
+function playChannel(channel) {
+  statusBar.textContent = `⏳ กำลังโหลด: ${channel.name}...`;
+  stopVideo();
+
+  if (Hls.isSupported()) {
+    hls = new Hls({
+      maxBufferLength: 30,
+      maxMaxBufferLength: 60,
+      liveSyncDurationCount: 3
+    });
+
+    hls.loadSource(channel.stream);
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      statusBar.textContent = `✅ กำลังเล่น: ${channel.name}`;
+      video.play().catch(() => {
+        statusBar.textContent = `⚠️ คลิกที่วิดีโอเพื่อเริ่มเล่น: ${channel.name}`;
+      });
+    });
+
+    hls.on(Hls.Events.ERROR, (ev, data) => {
+      if (data.fatal) {
+        statusBar.textContent = `❌ ไม่สามารถเล่น: ${channel.name} — ลิงก์ถูกบล็อก (CORS)`;
+        console.error('HLS Error:', data);
+      }
+    });
+
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = channel.stream;
+    video.play().catch(() => {});
+    statusBar.textContent = `✅ กำลังเล่น: ${channel.name}`;
+  } else {
+    statusBar.textContent = '❌ เบราว์เซอร์ไม่รองรับ HLS';
+  }
+}
+
+// ==============================================
+// ⏹️ หยุดวิดีโอ
+// ==============================================
+function stopVideo() {
+  if (hls) { hls.destroy(); hls = null; }
+  video.removeAttribute('src');
+  video.load();
+}
+
+// ==============================================
+// 🚀 เริ่มทำงาน
+// ==============================================
+renderCategories();
+</script>
+
+</body>
+</html>
