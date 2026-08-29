@@ -1,0 +1,20 @@
+{
+  "name": "WEITV Online",
+  "short_name": "WEITV",
+  "start_url": "https://sugus25.github.io/live-streame/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#e50914",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192/e50914/white?text=WEITV",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512/e50914/white?text=WEITV",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
