@@ -16,12 +16,43 @@
         :root { --blue: #66BAFF; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Inter', sans-serif; color: white; }
         
-        #player-wrapper { width: 100vw; height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; }
+        #player-wrapper { width: 100vw; height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; background: #000; }
         
-        /* THE VIDEO ELEMENT */
-        video { width: 100%; height: 100%; object-fit: contain; z-index: 1; }
-        .fill { object-fit: fill !important; }
-        .zoom { object-fit: cover !important; }
+        /* ========== VIDEO & ASPECT RATIO — ปรับขนาดวิดีโอ ========== */
+        video { 
+            width: 100%; height: 100%; 
+            object-fit: contain;       /* โหมด 1: ปกติ — ไม่ตัดภาพ ไม่มีการยืด */
+            z-index: 1; 
+            transition: all 0.3s ease;
+        }
+        
+        /* โหมด 2: เต็มจอเต็มพื้นที่ — ยืดเต็มขอบ อาจบิดเบี้ยว */
+        video.aspect-fill { object-fit: fill !important; }
+        
+        /* โหมด 3: ครอบเต็มจอ — ตัดขอบดำออก ภาพเต็มจอ */
+        video.aspect-zoom { object-fit: cover !important; }
+        
+        /* โหมด 4: 16:9 มาตรฐาน */
+        video.aspect-16x9 { 
+            width: 100%; height: auto; 
+            max-height: 100vh; 
+            aspect-ratio: 16/9; 
+            object-fit: contain; 
+        }
+        
+        /* โหมด 5: 4:3 มาตรฐาน */
+        video.aspect-4x3 { 
+            width: auto; height: 100%; 
+            max-width: 100vw; 
+            aspect-ratio: 4/3; 
+            object-fit: contain; 
+        }
+        
+        /* โหมด 6: ซูมเข้า — ขยายภาพเล็กน้อย ตัดขอบดำ */
+        video.aspect-zoom-fit { 
+            object-fit: contain; 
+            transform: scale(1.05); 
+        }
 
         /* UI OVERLAY */
         #ui-layer { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box; background: rgba(0,0,0,0.2); pointer-events: none; }
@@ -31,6 +62,7 @@
         .layer-top { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent); margin: -20px -20px 0 -20px; padding: 20px; }
         .back-btn { font-size: 24px; cursor: pointer; }
         .title { font-weight: 800; font-size: 20px; letter-spacing: 1px; }
+        .aspect-indicator { font-size: 12px; background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 12px; color: var(--blue); font-weight: 600; }
 
         /* 2. MIDDLE LAYER */
         .layer-middle { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
@@ -54,9 +86,36 @@
         .seek-fill { height: 100%; background: var(--blue); width: 0%; border-radius: 5px; }
         .seek-thumb { width: 16px; height: 16px; background: var(--blue); border-radius: 50%; position: absolute; top: -6px; margin-left: -8px; left: 0%; }
 
-        /* 4. LAST BOTTOM */
-        .layer-tools { display: flex; justify-content: flex-end; gap: 35px; align-items: center; padding-right: 10px; }
-        .tool-icon { font-size: 24px; cursor: pointer; }
+        /* 4. LAST BOTTOM — เพิ่มปุ่มปรับขนาด + เมนูตัวเลือก */
+        .layer-tools { display: flex; justify-content: flex-end; gap: 25px; align-items: center; padding-right: 10px; position: relative; }
+        .tool-icon { font-size: 24px; cursor: pointer; transition: 0.2s; }
+        .tool-icon:hover { color: var(--blue); transform: scale(1.1); }
+        
+        /* === ASPECT RATIO MENU — เมนูเลือกขนาดภาพ === */
+        .aspect-menu {
+            position: absolute; bottom: 50px; right: 10px;
+            background: rgba(10, 10, 20, 0.95);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 8px 0;
+            min-width: 160px;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            display: none;
+        }
+        .aspect-menu.show { display: block; }
+        .aspect-option {
+            padding: 12px 18px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .aspect-option:hover { background: rgba(102, 186, 255, 0.2); }
+        .aspect-option.active { color: var(--blue); font-weight: 600; background: rgba(102, 186, 255, 0.1); }
+        .aspect-option i { font-size: 12px; }
 
         /* UTILS */
         #brightness-mask { position: fixed; inset: 0; background: black; pointer-events: none; z-index: 5; opacity: 0; }
@@ -75,6 +134,7 @@
             <div class="layer-top">
                 <i class="fa-solid fa-chevron-left back-btn" onclick="history.back()"></i>
                 <div class="title">WEITV</div>
+                <div class="aspect-indicator" id="aspectLabel">เต็มจอ</div>
             </div>
 
             <!-- 2. MIDDLE -->
@@ -111,15 +171,44 @@
                         <div id="seekThumb" class="seek-thumb"></div>
                     </div>
                     <span id="durTime" class="time">00:00</span>
-                    <i class="fa-solid fa-ellipsis-vertical tool-icon" style="margin-left:10px;"></i>
                 </div>
 
-                <!-- 4. LAST BOTTOM -->
+                <!-- 4. LAST BOTTOM — เพิ่มเมนูปรับขนาด -->
                 <div class="layer-tools">
                     <i class="fa-solid fa-rotate tool-icon" onclick="rotateToggle()"></i>
                     <i class="fa-solid fa-clone tool-icon" onclick="togglePiP()"></i>
                     <i class="fa-solid fa-tower-broadcast tool-icon" onclick="alert('Cast Active')"></i>
-                    <i class="fa-solid fa-expand tool-icon" onclick="cycleAspect()"></i>
+                    
+                    <!-- ปุ่มเปิดเมนูปรับขนาดภาพ -->
+                    <i class="fa-solid fa-expand tool-icon" id="aspectBtn" onclick="toggleAspectMenu()"></i>
+                    
+                    <!-- เมนูเลือกขนาดภาพ -->
+                    <div class="aspect-menu" id="aspectMenu">
+                        <div class="aspect-option active" data-mode="contain" onclick="setAspect('contain', 'เต็มจอ')">
+                            <span>เต็มจอ (ไม่ตัดขอบ)</span>
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div class="aspect-option" data-mode="fill" onclick="setAspect('fill', 'ยืดเต็มจอ')">
+                            <span>ยืดเต็มจอ</span>
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div class="aspect-option" data-mode="cover" onclick="setAspect('cover', 'ครอบเต็มจอ')">
+                            <span>ครอบเต็มจอ (ไม่มีขอบดำ)</span>
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div class="aspect-option" data-mode="aspect-16x9" onclick="setAspect('aspect-16x9', '16:9')">
+                            <span>16:9 มาตรฐาน</span>
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div class="aspect-option" data-mode="aspect-4x3" onclick="setAspect('aspect-4x3', '4:3')">
+                            <span>4:3 มาตรฐาน</span>
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div class="aspect-option" data-mode="aspect-zoom-fit" onclick="setAspect('aspect-zoom-fit', 'ซูมตัดขอบ')">
+                            <span>ซูมตัดขอบดำ</span>
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -160,11 +249,59 @@
 
     function seekVideo(val) { video.currentTime += val; }
 
-    function cycleAspect() {
-        if (video.className === "") video.className = "fill";
-        else if (video.className === "fill") video.className = "zoom";
-        else video.className = "";
+    // ========== ASPECT RATIO CONTROLS — ฟังก์ชันปรับขนาดวิดีโอ ==========
+    let currentAspectMode = 'contain'; // ค่าเริ่มต้น
+    
+    // เปิด/ปิด เมนูเลือกขนาด
+    function toggleAspectMenu() {
+        const menu = document.getElementById('aspectMenu');
+        menu.classList.toggle('show');
     }
+    
+    // ตั้งค่าขนาดวิดีโอ
+    function setAspect(mode, label) {
+        // ลบคลาสทั้งหมดก่อน
+        video.classList.remove('aspect-fill', 'aspect-zoom', 'aspect-16x9', 'aspect-4x3', 'aspect-zoom-fit');
+        video.style.objectFit = '';
+        
+        // ตั้งค่าโหมดใหม่
+        if (mode === 'contain') {
+            video.style.objectFit = 'contain';
+        } else if (mode === 'fill') {
+            video.style.objectFit = 'fill';
+        } else if (mode === 'cover') {
+            video.style.objectFit = 'cover';
+        } else {
+            video.classList.add(mode);
+        }
+        
+        // อัปเดตสถานะ
+        currentAspectMode = mode;
+        document.getElementById('aspectLabel').textContent = label;
+        
+        // อัปเดตเมนู — ใส่เครื่องหมายถูก
+        document.querySelectorAll('.aspect-option').forEach(opt => {
+            opt.classList.remove('active');
+            opt.querySelector('i').style.opacity = '0';
+        });
+        const activeOpt = document.querySelector(`.aspect-option[data-mode="${mode}"]`);
+        if (activeOpt) {
+            activeOpt.classList.add('active');
+            activeOpt.querySelector('i').style.opacity = '1';
+        }
+        
+        // ปิดเมนู
+        document.getElementById('aspectMenu').classList.remove('show');
+    }
+    
+    // ปิดเมนูเมื่อกดที่อื่น
+    document.addEventListener('click', (e) => {
+        const btn = document.getElementById('aspectBtn');
+        const menu = document.getElementById('aspectMenu');
+        if (!btn.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.remove('show');
+        }
+    });
 
     function togglePiP() { if (document.pictureInPictureEnabled) video.requestPictureInPicture(); }
 
