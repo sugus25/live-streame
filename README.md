@@ -1,2 +1,2 @@
-# GOODTV
+# WEITV Online
 Online streaming 
