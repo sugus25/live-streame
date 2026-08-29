@@ -1,1030 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>M7▶️LAY - Dark Edition</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- ALLOW HTTP TRAFFIC (Important for your IPTV links) -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> 
+    <title>WIE TV</title>
+<!-- LIBRARIES -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script><style>ins[class*="adsbygoogle"],ins[class*="adsbyadop"],[id*="div-gpt-ad"],amp-ad{display:none !important;}</style><style id="sb_cln_style">ins[class*="adsbygoogle"],ins[class*="adsbyadop"],[id*="div-gpt-ad"],amp-ad{display:none !important;}</style><style id="sb_dark_style">img{-webkit-filter:brightness(70%);}</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.11.2/shaka-player.compiled.js"></script>
-        
-        <style id="sb_dark_style">img{-webkit-filter:brightness(70%);}</style><style>ins[class*="adsbygoogle"],ins[class*="adsbyadop"],[id*="div-gpt-ad"],amp-ad{display:none !important;}          </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.11.2/shaka-player.compiled.js"></script>
-    
-         <style>
-  :root{
-    --seven-green: #00bf52;      
-    --seven-green-dark: #008037; 
-    --seven-red: #ff3b30;        
-    --seven-orange: #ff9800;     
-    
-    --bg: #0f172a;          
-    --panel: rgba(30, 41, 59, 0.85);       
-    --panel2: rgba(51, 65, 85, 0.7);      
-    --line: rgba(255, 255, 255, 0.1);        
-    --text: #f8fafc;        
-    --muted: #94a3b8;       
-    
-    --accent: var(--seven-green); 
-    --ok: #10b981; 
-    --err: var(--seven-red);
-    --seven-stripe: linear-gradient(to right, var(--seven-green) 33.33%, var(--seven-red) 33.33%, var(--seven-red) 66.66%, var(--seven-orange) 66.66%);
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%}
-  body{
-    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #0f172a url('https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
-    background-size: cover;
-    color:var(--text); 
-    overflow:hidden;
-  }
-  body::before {
-    content: ""; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: -1;
-  }
-  button{font-family:inherit;cursor:pointer}
-  .hidden{display:none!important}
+<!-- VUE & FIREBASE -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-  /* ============ LOGIN SCREEN ============ */
-  #login{
-    min-height:100vh; display:flex; align-items:center; justify-content:center;
-    padding:40px 20px; overflow-y:auto; position: relative; z-index: 1;
-  }
-  .login-wrapper { display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; max-width: 440px; margin: auto; }
-  
-  .banner-slider { width: 100%; aspect-ratio: 16/9; border-radius: 12px; background: #000; box-shadow: 0 15px 35px rgba(0,0,0,0.6); position: relative; overflow: hidden; border: 2px solid rgba(255,255,255,0.1); }
-  .banner-slider img.slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.6s ease-in-out; z-index: 0; }
-  .banner-slider img.slide.active { opacity: 1; z-index: 1; }
-  .slider-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 2; }
-  .slider-dots span { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.3s ease; }
-  .slider-dots span.active { background: var(--seven-orange); box-shadow: 0 0 5px var(--seven-orange); transform: scale(1.3); }
-
-  .card{ width: 100%; background: var(--panel); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); position: relative; overflow: hidden; }
-  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: var(--seven-stripe); }
-  .brand{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-  .brand .dot{ width:14px;height:14px;border-radius:50%; background: var(--seven-stripe); }
-  .brand h1{font-size:24px;margin:0; font-weight: 700; color:#fff;}
-  .sub{color:var(--muted);font-size:14px;margin:0 0 24px}
-  
-  label{display:block;font-size:13px;color:var(--text);margin:14px 0 8px; font-weight:500;}
-  input{ width:100%;padding:14px 16px;border-radius:10px;border:1px solid var(--line); background: rgba(15, 23, 42, 0.6); color:#fff;font-size:14px;outline:none; transition:0.2s; }
-  input:focus{border-color:var(--seven-green); background:rgba(15, 23, 42, 0.9); box-shadow: 0 0 0 3px rgba(0, 191, 82, 0.2);}
-  .row{display:flex;gap:12px}
-  .row>div{flex:1}
-  
-  .btn{ width:100%;margin-top:28px;padding:14px;border:0;border-radius:10px; background: var(--seven-orange); color:#fff;font-size:16px;font-weight:700; transition:0.15s; }
-  .btn:hover{background: #e67500; transform:translateY(-2px); }
-  .msg{margin-top:16px;font-size:14px;text-align:center;font-weight:500;}
-  .msg.err{color:var(--err)}
-  .msg.ok{color:var(--ok)}
-
-  /* --- [เพิ่ม] ส่วนปรับสัดส่วนหน้า Login อัตโนมัติ (มือถือ / เว็บ / ทีวี) --- */
-  @media (max-width: 480px) {
-    #login { padding: 20px 16px; }
-    .login-wrapper { gap: 16px; }
-    .card { padding: 24px 20px; border-radius: 12px; }
-    .row { flex-direction: column; gap: 0; }
-    .btn { margin-top: 20px; padding: 12px; font-size: 15px; }
-    input { padding: 12px 14px; font-size: 14px; }
-    .brand h1 { font-size: 22px; }
-  }
-  @media (min-width: 1600px) {
-    .login-wrapper { max-width: 600px; gap: 32px; }
-    .card { padding: 50px 60px; border-radius: 24px; }
-    .brand h1 { font-size: 32px; }
-    .brand .dot { width: 18px; height: 18px; }
-    .sub { font-size: 18px; margin-bottom: 32px; }
-    label { font-size: 16px; margin: 20px 0 12px; }
-    input { font-size: 18px; padding: 18px 24px; border-radius: 12px; }
-    .btn { font-size: 20px; padding: 18px; margin-top: 36px; border-radius: 12px; }
-  }
-
-  /* ============ APP SCREEN ============ */
-  #app{height:100vh;display:grid;grid-template-rows:66px 1fr}
-  header{ display:flex;align-items:center;gap:16px;padding:0 24px; background:var(--panel); border-bottom: 1px solid var(--line); position: relative; }
-  header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--seven-stripe); }
-  header .brand h1{font-size:20px; font-weight: 700; color:#fff;}
-  .tabs{display:flex;gap:8px;margin-left:16px}
-  .tab{ padding:8px 20px;border-radius:24px;background:transparent;border:0; color:var(--muted);font-size:15px; font-weight: 500; transition:all 0.2s; }
-  .tab:hover{color:var(--text); background:rgba(255, 255, 255, 0.05);}
-  .tab.active{background:var(--seven-green-dark);color:#fff;}
-  .spacer{flex:1}
-  
-  .refresh-btn { background: transparent; border: 1px solid var(--line); color: var(--text); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-  .refresh-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--seven-green); color: var(--seven-green); transform: rotate(180deg); }
-
-  .userchip{font-size:13px;color:var(--muted);font-weight:500;}
-  .logout{background:transparent;border:1px solid var(--line);color:var(--text);padding:8px 16px;border-radius:20px;font-size:14px;transition:0.2s;}
-  .logout:hover{color:#fff; border-color:var(--seven-red); background:var(--seven-red);}
-
-  .main{display:grid;grid-template-columns:260px 1fr;min-height:0}
-  
-  .sidebar{ background-color: rgba(15, 23, 42, 0.5); border-right: 1px solid var(--line); overflow-y:auto; padding:16px 12px; display:flex; flex-direction:column; }
-  .sidebar-tools { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding: 0 4px; }
-  .adult-toggle { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); cursor: pointer; user-select: none;}
-  .adult-toggle input { width: 14px; height: 14px; margin: 0; accent-color: var(--seven-red); cursor: pointer;}
-  .adult-toggle:hover { color: #fff; }
-  .add-m3u-btn { background: var(--seven-orange); border:none; color: #fff; padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; }
-  .add-m3u-btn:hover { background: #e67500; }
-
-  .search{margin-bottom:16px}
-  .search input{ padding:10px 14px;font-size:14px; border-radius:10px; background:rgba(255,255,255,0.05); border:1px solid var(--line); color:#fff; width: 100%; }
-  
-  .cat{ padding:10px 14px;border-radius:8px;color:var(--text);font-size:14px;cursor:pointer; white-space:nowrap;overflow:hidden;text-overflow:ellipsis; margin-bottom:4px; transition: 0.2s; opacity: 0.8; }
-  .cat:hover{background:rgba(255,255,255,0.05); opacity: 1;}
-  .cat.active{ background:rgba(255,255,255,0.1); color:var(--seven-green); opacity: 1; font-weight: 700; border-left:5px solid var(--seven-orange); border-radius:4px 8px 8px 4px; }
-  .cat.m3u-cat { border-right: 3px solid #3b82f6; }
-  
-  .content{ overflow-y:auto; padding:24px; background-color: transparent; position: relative;}
-  .grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
-  .item{ background:var(--panel2); border:2px solid transparent;border-radius:12px;overflow:hidden; cursor:pointer;transition:transform .2s; }
-  .item:hover{ transform:translateY(-6px); border-color:var(--seven-orange); background: var(--panel); }
-  
-  .thumb{ width:100%;aspect-ratio:2/3;background:#000;object-fit:cover;display:block; }
-  .item.live .thumb{ aspect-ratio:16/9; object-fit:contain; padding: 12px; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--line); }
-  .item .cap{padding:12px 14px;font-size:14px;line-height:1.4; color:var(--text); display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:50px;font-weight:500;}
-  
-  .shelf-title{font-size:18px;color:#fff;font-weight:700;margin:10px 0 16px; border-left: 5px solid var(--seven-green); padding-left:12px;}
-  
-  .loading,.empty{color:var(--muted);padding:50px;text-align:center;font-size:15px;font-weight:500;}
-  .spinner{ width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--seven-orange); border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px; }
-  @keyframes spin{to{transform:rotate(360deg)}}
-
-  /* ============ PAGINATION ============ */
-  .pagination { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line); }
-  .pg-btn { background: rgba(255,255,255,0.1); color: var(--text); border: 1px solid var(--line); padding: 10px 20px; border-radius: 8px; transition: 0.2s; font-weight: 500; font-family: inherit;}
-  .pg-btn:hover:not(:disabled) { background: var(--seven-orange); color: #fff; border-color: var(--seven-orange); }
-  .pg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .pg-info { font-size: 15px; color: #fff; font-weight: 700; }
-
-  /* ============ PLAYER MODAL ============ */
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px; backdrop-filter:blur(10px);}
-  .player-box{width:min(1000px,96vw);background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.8);}
-  
-  .player-head{
-      display:flex;
-      align-items:center;gap:12px;
-      padding:16px 20px;
-      border-bottom:1px solid var(--line); 
-      background:var(--panel);
-      
-  }
-      .player-head h3{margin:0;font-size:16px; font-weight: 700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; color:var(--seven-green);
-      
-  }
-      video{width:100%;
-      background:#000;
-      max-height:65vh;
-      object-fit; cover;
-      display:block}
-  
-  .player-bar{
-      display:flex;
-      flex-wrap:wrap;gap:14px;
-      align-items:center;
-      padding:14px 20px;background:var(--panel);
-      border-top:1px solid var(--line)}
-  
-  .vlc-btn, .ext-btn, .win-btn, .copy-btn { border:0; border-radius:8px; padding:9px 16px; font-size:14px; font-weight:700; color:#fff;}
-  .vlc-btn{background:var(--seven-orange);} 
-  .win-btn{background:#3b82f6;}
-  .copy-btn{background:rgba(255,255,255,0.1); border:1px solid var(--line); font-weight:500;}
-  
-  .vlc-note{padding:12px 20px;font-size:13px;color:var(--muted);background:var(--panel2);border-top:1px solid var(--line);line-height:1.6}
-  .vlc-note b{color:var(--seven-orange)}
-  
-  .trk-wrap{display:flex;align-items:center;gap:10px}
-  .trk-lbl{font-size:14px;color:var(--muted);font-weight:700;}
-  .trk{background:rgba(0,0,0,0.3);color:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:14px;min-width:130px;cursor:pointer; font-family: inherit;}
-  
-  .autonext{display:flex;align-items:center;gap:8px;font-size:14px;padding:12px 20px; border-top:1px solid var(--line); background:var(--panel);}
-  .close{background:rgba(255,255,255,0.1);border:0;border-radius:50%;color:#fff;width:32px;height:32px;}
-  .close:hover{background:var(--seven-red);}
-  
-  .ep-list{padding:16px 20px;max-height:220px;overflow-y:auto;border-top:1px solid var(--line); background:var(--panel);}
-  .ep-list .season{color:var(--seven-orange);font-size:14px;margin:12px 0 8px;font-weight:700;}
-  .ep{padding:10px 14px;border-radius:8px;font-size:14px;cursor:pointer; margin-bottom:4px;}
-  .ep:hover{background:rgba(255,255,255,0.05);}
-  .ep.active{background:rgba(0, 191, 82, 0.1);color:var(--seven-green); border-left:4px solid var(--seven-green);}
-  
-  .perr{padding:14px 20px;color:#ff8a80;font-size:14px; background:rgba(229, 28, 35, 0.1); font-weight:500;}
-  .item-search{background:rgba(0,0,0,0.2);border:1px solid var(--line);color:#fff;border-radius:20px;padding:9px 16px;width:220px;margin-right:10px; font-family: inherit;
-      
-  }
-          .grid {
-    display: grid;
-    gap: 18px;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    align-items: stretch;
-  }
-
-  /* การ์ดแต่ละช่อง */
-  .item {
-    background: var(--panel2);
-    border: 2px solid transparent;
-    border-radius: 14px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-  .item:hover {
-    transform: translateY(-5px);
-    border-color: var(--seven-orange);
-    background: var(--panel);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-  }
-
-  /* รูปภาพโลโก้ช่อง */
-  .thumb {
-    width: 100%;
-    aspect-ratio: 16/9;
-    background: #000;
-    object-fit: contain;
-    display: block;
-    padding: 10px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  /* ชื่อช่อง */
-  .cap {
-    padding: 12px 10px;
-    font-size: 14px;
-    line-height: 1.4;
-    color: var(--text);
-    flex: 1;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    min-height: 50px;
-    font-weight: 500;
-    text-align: center;
-  }
-
-  /* ============ ปรับขนาดตามหน้าจอ ============ */
-  @media (max-width: 480px) {
-    .grid {
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 12px;
+<style>
+    /* --- THEME --- */
+    :root {
+        --primary: #00e600;     
+        --bg-deep: #080810;     
+        --bg-card: #151520;
+        --text-main: #ffffff;
+        --rating-bg: #FFD700;
     }
-    .cap {
-      font-size: 13px;
-      padding: 10px 8px;
-    }
-  }
 
-  @media (min-width: 1200px) {
-    .grid {
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 22px;
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+        background-color: var(--bg-deep);
+        color: var(--text-main);
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+        padding-bottom: 90px;
+        user-select: none; /* Disables text selection for app-like feel */
     }
-  }
+
+    /* --- HEADER --- */
+    .app-header {
+        position: fixed; top: 0; left: 0; width: 100%; height: 60px;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0 16px; z-index: 100;
+        background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+    }
+    .logo { font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -1px; }
+    .logo span:first-child { color: var(--primary); } 
+    .logo span:last-child { color: white; }
+    
+    .header-icons { display: flex; gap: 18px; align-items: center; }
+    .icon-btn { position: relative; font-size: 1.3rem; color: white; cursor: pointer; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .notif-dot {
+        position: absolute; top: 0; right: 0;
+        width: 8px; height: 8px; background: red; border-radius: 50%; border: 1px solid white;
+    }
+
+    /* --- SEARCH PAGE --- */
+    .search-page {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg-deep); z-index: 2000;
+        display: flex; flex-direction: column;
+        animation: slideIn 0.2s ease-out;
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .search-header {
+        height: 60px; display: flex; align-items: center; gap: 15px; padding: 0 15px;
+        border-bottom: 1px solid #222; background: #080810;
+    }
+    .search-input { flex: 1; background: transparent; border: none; color: white; font-size: 1rem; }
+    .search-grid {
+        padding: 15px; overflow-y: auto; flex: 1;
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    }
+    .search-card {
+        border-radius: 6px; overflow: hidden; position: relative;
+        background: #222; aspect-ratio: 2/3;
+    }
+    .search-card img { width: 100%; height: 100%; object-fit: cover; }
+    .search-badge { position: absolute; top: 5px; right: 5px; font-size: 0.6rem; padding: 2px 4px; border-radius: 3px; font-weight: bold; color:white; background:rgba(0,0,0,0.7); }
+
+    /* --- HERO SLIDER --- */
+    .hero-slider { height: 55vh; width: 100%; position: relative; overflow: hidden; }
+    .slide-item {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background-size: cover; background-position: center top;
+        transition: opacity 0.8s ease-in-out; opacity: 0;
+    }
+    .slide-item.active { opacity: 1; }
+    .hero-overlay {
+        position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(0deg, var(--bg-deep) 15%, rgba(0,0,0,0) 60%);
+        display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
+    }
+    .hero-cat-tag { color: var(--primary); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; text-shadow: 1px 1px 2px black; }
+    .hero-title { font-size: 1.8rem; font-weight: 700; line-height: 1.2; margin-bottom: 12px; text-shadow: 2px 2px 5px black; }
+    .big-play-btn {
+        width: 50px; height: 50px; border-radius: 50%; background: var(--primary); border: none;
+        display: flex; justify-content: center; align-items: center; box-shadow: 0 0 15px rgba(0, 230, 0, 0.4);
+    }
+    .dots-container { display: flex; gap: 5px; position: absolute; bottom: 15px; left: 20px; z-index: 10; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.3); transition: 0.3s; }
+    .dot.active { width: 18px; background: var(--primary); border-radius: 4px; }
+
+    /* --- RAILS & CARDS (Fixed Size) --- */
+    .section { margin-top: 25px; }
+    .section-header { padding: 0 16px 10px; display: flex; justify-content: space-between; align-items: center; }
+    .section-title { font-size: 1rem; font-weight: 700; border-left: 3px solid var(--primary); padding-left: 10px; }
+    .rail { display: flex; overflow-x: auto; padding: 0 16px 20px; gap: 10px; scroll-behavior: smooth; }
+    .rail::-webkit-scrollbar { display: none; }
+
+    .card-wrapper { flex: 0 0 105px; width: 105px; display: flex; flex-direction: column; gap: 6px; }
+    .card-img-box { position: relative; width: 100%; height: 155px; border-radius: 6px; overflow: hidden; background: #222; }
+    .card-img-box img { width: 100%; height: 100%; object-fit: cover; }
+    .rating-badge { position: absolute; top: 6px; left: 6px; background: var(--rating-bg); color: black; font-size: 0.55rem; font-weight: 800; padding: 2px 5px; border-radius: 3px; display: flex; align-items: center; gap: 2px; }
+    .card-title { font-size: 0.75rem; color: #ddd; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .card-wide-wrapper { flex: 0 0 150px; display: flex; flex-direction: column; gap: 5px; }
+    .card-wide-box { width: 100%; height: 90px; border-radius: 6px; background: #1a1a2e; position: relative; border: 1px solid #333; overflow: hidden; }
+    .card-wide-box img { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
+
+    /* --- BOTTOM NAV --- */
+    .bottom-nav {
+        position: fixed; bottom: 0; left: 0; width: 100%; height: 70px;
+        background: #080810; border-top: 1px solid #222;
+        display: flex; justify-content: space-around; align-items: center; z-index: 90;
+    }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #666; font-size: 0.65rem; transition: 0.3s; }
+    .nav-item.active { color: var(--primary); transform: translateY(-2px); }
+    .nav-item i { font-size: 1.2rem; }
+
+    /* --- DETAILS MODAL --- */
+    .full-modal {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--bg-deep); z-index: 3000; overflow-y: auto;
+    }
+    .placeholder-page { padding-top: 80px; text-align: center; color: #666; height: 100vh; }
+
 </style>
 </head>
 <body>
-
-<!-- LOGIN -->
-<div id="login" class="hidden">
-  <div class="login-wrapper">
-    <div class="banner-slider" id="bannerSlider">
-      <img class="slide" src="http://m7smarter.ddns.net/m7play.png" alt="Banner 1">
-      <img class="slide active" src="https://via.placeholder.com/640x360/1e293b/00bf52?text=M7PLAY+TV+PROMO+2" alt="Banner 2">
-      <div class="slider-dots" id="sliderDots"><span class="" data-idx="0"></span><span data-idx="1" class="active"></span></div>
-    </div>
-    
-    <div class="card">
-      <div class="brand"><span class="dot"></span><h1>M7Play TV</h1></div>
-      <p class="sub">เข้าสู่ระบบเพื่อรับชมความบันเทิงแบบพรีเมียม</p>
-      
-      <!-- ซ่อนช่องกรอก Server URL จากผู้ใช้ -->
-      
-      <div class="row">
-        <div><label>Username</label><input id="f-user" placeholder="username" autocomplete="off"></div>
-        <div><label>Password</label><input id="f-pass" type="password" placeholder="password" autocomplete="off"></div>
-      </div>
-      <button class="btn" id="loginBtn">เข้าสู่ระบบ</button>
-      <div class="msg ok" id="loginMsg">เชื่อมต่อสำเร็จ</div>
-    </div>
-  </div>
+<div id="app">
+code
+Code
+<!-- Loading -->
+<div v-if="loading" style="position:fixed; inset:0; background:#080810; z-index:9999; display:flex; justify-content:center; align-items:center;">
+    <div class="logo" style="font-size:3rem"><span>WIE</span><span>TV</span></div>
 </div>
 
-<!-- APP -->
-<div id="app" class="">
-  <header>
-    <div class="brand"><span class="dot"></span><h1>M7Play TV</h1></div>
-    <div class="tabs">
-      <button class="tab" data-type="live">ทีวีออนไลน์</button>
-      <button class="tab active" data-type="vod">ภาพยนตร์</button>
-      <button class="tab" data-type="series">ซีรีส์</button>
+<!-- MAIN APP HEADER -->
+<header class="app-header" v-if="!searchOpen">
+    <div class="logo"><span>WIE</span><span>TV</span></div>
+    <div class="header-icons">
+        <i class="fa-brands fa-chromecast icon-btn" @click="triggerAndroid('cast')"></i>
+        <div class="icon-btn" @click="triggerAndroid('notification')">
+            <i class="fa-regular fa-bell"></i>
+            <div class="notif-dot" v-if="hasUpdate"></div>
+        </div>
+        <i class="fa-solid fa-magnifying-glass icon-btn" @click="searchOpen = true"></i>
     </div>
-    <div class="spacer"></div>
-    <input id="itemSearch" class="item-search" placeholder="ค้นหาหนัง/ซีรีส์..." autocomplete="off" style="">
-    <button id="refreshBtn" class="refresh-btn" title="รีเฟรชข้อมูลล่าสุด">🔄</button>
-    <span class="userchip" id="userchip">test</span>
-    <button class="logout" id="logoutBtn">ออกจากระบบ</button>
-  </header>
+</header>
 
-  <div class="main">
-    <aside class="sidebar">
-      <div class="sidebar-tools">
-        <label class="adult-toggle" id="adultToggleBtn" title="แสดง/ซ่อน หมวดหมู่สำหรับผู้ใหญ่">
-          <input type="checkbox" id="adultCheck" style="pointer-events: none;"> 🔞 หมวด 18+
-        </label>
-        <button id="addM3uBtn" class="add-m3u-btn">➕ ลิ้งก์ M3U</button>
-      </div>
-      
-      <div class="search"><input id="catSearch" placeholder="ค้นหาหมวดหมู่..."></div>
-      <div id="catList" style="flex:1; overflow-y:auto; padding-right:4px;"><div class="empty">ไม่พบ</div></div>
-    </aside>
-    <section class="content" id="content"><div class="empty">ไม่มีหมวดหมู่</div></section>
-  </div>
+<!-- FULL SCREEN SEARCH PAGE -->
+<div class="search-page" v-if="searchOpen">
+    <div class="search-header">
+        <i class="fa-solid fa-arrow-left icon-btn" @click="searchOpen = false"></i>
+        <input type="text" class="search-input" v-model="searchQuery" placeholder="Search..." autofocus>
+    </div>
+    <div class="search-grid">
+        <div class="search-card" v-for="m in filteredMovies" :key="m.id" @click="openDetails(m)">
+            <img :src="m.poster_url" @error="imgError">
+        </div>
+        <div class="search-card" v-for="s in filteredSeries" :key="s.id" @click="openDetails(s)">
+            <img :src="s.poster_url" @error="imgError"><div class="search-badge">SERIES</div>
+        </div>
+        <div class="search-card" v-for="c in filteredChannels" :key="c.id" @click="playVideo(c.stream_url)">
+            <img :src="c.logo_url" style="object-fit:contain; padding:10px;" @error="imgError"><div class="search-badge" style="background:red;">LIVE</div>
+        </div>
+        <div class="search-card" v-for="p in filteredPlaylists" :key="p.id" @click="playPlaylist(p.url)">
+            <div style="width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;color:var(--primary);font-weight:bold;font-size:0.8rem">{{ p.name }}</div>
+        </div>
+    </div>
 </div>
 
-<!-- PLAYER MODAL -->
-<div class="modal hidden" id="modal">
-  <div class="player-box">
-    <div class="player-head">
-      <h3 id="playerTitle"></h3>
-      <button class="close" id="closeBtn">×</button>
+<!-- MAIN CONTENT -->
+<div v-if="!loading && !searchOpen">
+
+    <!-- HOME VIEW -->
+    <div v-if="currentView === 'home'">
+        <!-- SLIDER -->
+        <div class="hero-slider" v-if="sliderItems.length > 0">
+            <div class="slide-item" v-for="(item, index) in sliderItems" :key="item.id" 
+                 :class="{ active: currentSlide === index }"
+                 :style="{ backgroundImage: 'url(' + item.poster_url + ')' }">
+                <div class="hero-overlay">
+                    <div class="hero-cat-tag">{{ item.type === 'movie' ? 'MOVIES' : 'TV SHOWS' }}</div>
+                    <div class="hero-title">{{ item.title }}</div>
+                    <div style="display:flex; gap:10px; align-items:center;" @click="openDetails(item)">
+                        <button class="big-play-btn"><i class="fa-solid fa-play"></i></button>
+                        <span style="font-weight:600">Watch Now</span>
+                    </div>
+                </div>
+            </div>
+            <div class="dots-container">
+                <div class="dot" v-for="(dot, idx) in sliderItems" :key="idx" :class="{ active: currentSlide === idx }"></div>
+            </div>
+        </div>
+
+        <!-- CATEGORIES -->
+        <div v-for="cat in categories" :key="cat.id">
+            <div class="section" v-if="getCategoryContent(cat.name).length > 0">
+                <div class="section-header"><span class="section-title">{{ cat.name }}</span></div>
+                <div class="rail">
+                    <div class="card-wrapper" v-for="item in getCategoryContent(cat.name)" :key="item.id" @click="openDetails(item)">
+                        <div class="card-img-box"><img :src="item.poster_url" @error="imgError"><div class="rating-badge"><i class="fa-solid fa-star"></i> 8.5</div></div>
+                        <div class="card-title">{{ item.title }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="section" v-if="getCategoryChannels(cat.name).length > 0">
+                <div class="section-header"><span class="section-title">{{ cat.name }} Channels</span></div>
+                <div class="rail">
+                    <div class="card-wide-wrapper" v-for="ch in getCategoryChannels(cat.name)" :key="ch.id" @click="playVideo(ch.stream_url)">
+                        <div class="card-wide-box">
+                            <div style="position:absolute;top:4px;left:4px;background:red;color:white;font-size:0.5rem;padding:2px 4px;border-radius:2px;font-weight:bold;">LIVE</div>
+                            <img :src="ch.logo_url" @error="imgError">
+                        </div>
+                        <div class="card-title">{{ ch.name }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LATEST FALLBACK -->
+        <div class="section" v-if="categories.length === 0 && movies.length > 0">
+            <div class="section-header"><span class="section-title">Latest Movies</span></div>
+            <div class="rail">
+                <div class="card-wrapper" v-for="m in movies" :key="m.id" @click="openDetails(m)">
+                    <div class="card-img-box"><img :src="m.poster_url" @error="imgError"></div>
+                    <div class="card-title">{{ m.title }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PLAYLISTS -->
+        <div class="section" v-if="playlists.length > 0">
+            <div class="section-header"><span class="section-title">Premium Playlists</span></div>
+            <div class="rail">
+                <div class="card-wrapper" v-for="pl in playlists" :key="pl.id" @click="playPlaylist(pl.url)">
+                    <div class="card-img-box" style="background:#111;display:flex;align-items:center;justify-content:center;color:var(--primary);font-weight:bold;font-size:0.8rem;text-align:center;">
+                        {{ pl.name }}
+                    </div>
+                    <div class="card-title">{{ pl.name }}</div>
+                </div>
+            </div>
+        </div>
+
     </div>
-    <video id="video" controls="" playsinline="" controlslist="nodownload noremoteplayback" disablepictureinpicture="" oncontextmenu="return false"></video>
-    <div class="player-bar" id="playerBar">
-      <button class="vlc-btn" id="vlcBtn">🎬 เปิดใน VLC</button>
-      <button class="ext-btn" id="extBtn" style="background:#ea4335;">📱 Google Video</button>
-      <button class="win-btn" id="winBtn">🖥️ เปิดใน yamby</button>
-      <button class="copy-btn" id="copyBtn">📋 คัดลอกลิงก์</button>
-      
-      <div class="trk-wrap" id="audioWrap">
-        <span class="trk-lbl">เสียง</span>
-        <select class="trk" id="audioSel"><option>ต้นฉบับ</option></select>
-      </div>
-      <div class="trk-wrap" id="subWrap">
-        <span class="trk-lbl">ซับไตเติล</span>
-        <select class="trk" id="subSel"><option value="-1">ปิด</option></select>
-      </div>
-    </div>
-    <div class="vlc-note hidden" id="vlcNote"></div>
-    <div id="playerErr" class="perr hidden"></div>
-    <label class="autonext hidden" id="autoNextWrap">
-      <input type="checkbox" id="autoNext" checked=""> เล่นตอนต่อไปอัตโนมัติเมื่อจบ
-    </label>
-    <div id="epList" class="ep-list hidden"></div>
-  </div>
+
+    <!-- PLACEHOLDER VIEWS -->
+    <div v-if="currentView === 'subscription'" class="placeholder-page"><i class="fa-solid fa-layer-group" style="font-size:3rem;"></i><br>Plans</div>
+    <div v-if="currentView === 'saved'" class="placeholder-page"><i class="fa-regular fa-bookmark" style="font-size:3rem;"></i><br>Saved</div>
+    <div v-if="currentView === 'menu'" class="placeholder-page"><i class="fa-solid fa-bars" style="font-size:3rem;"></i><br>Menu</div>
 </div>
 
+<!-- DETAILS MODAL -->
+<div class="full-modal" v-if="selectedItem">
+    <i class="fa-solid fa-arrow-left" style="position:absolute; top:20px; left:20px; font-size:1.5rem; z-index:10; background:rgba(0,0,0,0.6); padding:10px; border-radius:50%; color:white" @click="selectedItem = null"></i>
+    <img :src="selectedItem.poster_url" style="width:100%; height:45vh; object-fit:cover;">
+    <div style="padding:20px;">
+        <h1 style="font-size:1.8rem; font-weight:800;">{{ selectedItem.title }}</h1>
+        <div style="color:var(--primary); font-size:0.9rem; margin:10px 0;">{{ selectedItem.category }}</div>
+        <p style="color:#bbb; line-height:1.5;">{{ selectedItem.description }}</p>
+        
+        <!-- Play Button (Sends to Sketchware) -->
+        <button v-if="selectedItem.type === 'movie'" class="big-play-btn" style="width:100%; height:50px; border-radius:8px; gap:10px; margin-top:20px" @click="playVideo(selectedItem.video_url)">
+            <i class="fa-solid fa-play"></i> Watch Movie
+        </button>
+
+        <!-- Episodes -->
+        <div v-if="selectedItem.type === 'tvshow'" style="margin-top:20px;">
+            <h3>Episodes</h3>
+            <div v-for="ep in selectedItem.episodes" style="background:#1a1a2e; margin-top:10px; padding:15px; border-radius:8px; display:flex; align-items:center;" @click="playVideo(ep.u)">
+                <span style="font-weight:bold; color:gray; width:30px;">{{ ep.e }}</span>
+                <div style="flex:1"><div>{{ ep.t || 'Episode ' + ep.e }}</div></div>
+                <i class="fa-solid fa-play" style="color:var(--primary)"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+    <div class="nav-item" :class="{ active: currentView === 'home' }" @click="currentView = 'home'"><i class="fa-solid fa-house"></i><span>Home</span></div>
+    <div class="nav-item" :class="{ active: currentView === 'subscription' }" @click="currentView = 'subscription'"><i class="fa-solid fa-layer-group"></i><span>Sub</span></div>
+    <div class="nav-item" :class="{ active: currentView === 'saved' }" @click="currentView = 'saved'"><i class="fa-regular fa-bookmark"></i><span>Saved</span></div>
+    <div class="nav-item" :class="{ active: currentView === 'menu' }" @click="currentView = 'menu'"><i class="fa-solid fa-bars"></i><span>Menu</span></div>
+</div>
+</div>
 <script>
-"use strict";
-if(window.shaka && shaka.polyfill) shaka.polyfill.installAll();
-
-/* ---------------- Hardcoded URL ---------------- */
-const FIXED_SERVER_URL = "http://mooseven.ddns.net:8080";
-
-/* ---------------- Banner Logic ---------------- */
-const slides=document.querySelectorAll(".slide"), dots=document.querySelectorAll("#sliderDots span");
-let curSlide=0;
-setInterval(()=>{
-  slides[curSlide].classList.remove("active"); dots[curSlide].classList.remove("active");
-  curSlide = (curSlide+1)%slides.length;
-  slides[curSlide].classList.add("active"); dots[curSlide].classList.add("active");
-}, 5000);
-
-/* ---------------- State ---------------- */
-const S = { 
-  url: FIXED_SERVER_URL, user:"", pass:"", type:"live", cats:[], catId:null, items:[], 
-  hls:null, shaka:null, eps:[], epIndex:-1, series:null, currentSrc:"",
-  showAdult: false,
-  m3uLinks: [], 
-  m3uData: { cats:[], items:{} }
-};
-const $ = id => document.getElementById(id);
-const api = p => `${S.url}/player_api.php?username=${encodeURIComponent(S.user)}&password=${encodeURIComponent(S.pass)}${p?"&"+p:""}`;
-
-async function jget(u){ const r=await fetch(u); if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); }
-function normUrl(u){ u=u.trim().replace(/\/+$/,""); return !/^https?:\/\//i.test(u)?"http://"+u:u; }
-function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
-/* ---------------- Adult Toggle & PIN Protection ---------------- */
-if(localStorage.getItem("m7_showAdult") === "true"){ 
-  S.showAdult = true; 
-  $("adultCheck").checked = true; 
-}
-const adultKWs = ['18+', 'adult', 'xxx', 'porn', 'nsfw', 'av ', 'r21'];
-function isAdult(name) { 
-  if(typeof name !== 'string') return false; 
-  return adultKWs.some(kw => name.toLowerCase().includes(kw)); 
-}
-
-$("adultToggleBtn").addEventListener("click", (e) => {
-  e.preventDefault(); 
-  
-  if(!S.showAdult){
-    let savedPin = localStorage.getItem("m7_adult_pin");
-    if(!savedPin) {
-      let newPin = prompt("ตั้งรหัสผ่านใหม่ (ตัวเลข) สำหรับเปิดหมวด 18+:");
-      if(newPin && newPin.trim() !== "") {
-        localStorage.setItem("m7_adult_pin", newPin.trim());
-        enableAdult();
-      }
-    } else {
-      let pin = prompt("กรุณาใส่รหัสผ่านเพื่อเปิดหมวด 18+:\n(หากต้องการล้างรหัสผ่าน ให้พิมพ์คำว่า 'reset')");
-      if(pin === savedPin) {
-        enableAdult();
-      } else if(pin === "reset") {
-        localStorage.removeItem("m7_adult_pin");
-        alert("ล้างรหัสผ่านเรียบร้อยแล้ว กรุณากดเปิดอีกครั้งเพื่อตั้งรหัสผ่านใหม่");
-      } else if(pin !== null) {
-        alert("รหัสผ่านไม่ถูกต้อง!");
-      }
-    }
-  } else {
-    if(confirm("ต้องการปิด/ซ่อนหมวด 18+ ใช่หรือไม่?")) {
-      S.showAdult = false;
-      localStorage.setItem("m7_showAdult", "false");
-      $("adultCheck").checked = false;
-      renderCats($("catSearch").value);
-    }
-  }
-});
-
-function enableAdult() {
-  S.showAdult = true;
-  localStorage.setItem("m7_showAdult", "true");
-  $("adultCheck").checked = true;
-  renderCats($("catSearch").value);
-}
-
-/* ---------------- Login ---------------- */
-(function(){
-  try{
-    const s = JSON.parse(localStorage.getItem("xtream_login")||"{}");
-    if(s.user) $("f-user").value=s.user; if(s.pass) $("f-pass").value=s.pass;
-    if(s.user && s.pass) setTimeout(doLogin, 100);
-  }catch(e){}
-  try { S.m3uLinks = JSON.parse(localStorage.getItem("m7_m3u")||"[]"); }catch(e){}
-})();
-
-$("loginBtn").onclick = doLogin;
-async function doLogin(){
-  const msg=$("loginMsg"), user=$("f-user").value.trim(), pass=$("f-pass").value.trim();
-  if(!user || !pass) return msg.className="msg err", msg.textContent="กรุณากรอกข้อมูลให้ครบ";
-  S.user=user; S.pass=pass; $("loginBtn").disabled=true; msg.className="msg"; msg.textContent="กำลังเชื่อมต่อ...";
-  try{
-    const info = await jget(api(""));
-    if(!info||!info.user_info||info.user_info.auth===0) throw new Error("รหัสผ่านไม่ถูกต้อง");
-    msg.className="msg ok"; msg.textContent="เชื่อมต่อสำเร็จ";
-    localStorage.setItem("xtream_login", JSON.stringify({user,pass}));
-    
-    $("userchip").textContent = `${user}`; 
-    enterApp(); 
-    
-    loadAllM3U().then(() => {
-      if(S.type) renderCats($("catSearch").value);
-    });
-
-  }catch(e){ msg.className="msg err"; msg.textContent="ผิดพลาด: "+e.message; }
-  finally{ $("loginBtn").disabled=false; }
-}
-
-function enterApp(){ $("login").classList.add("hidden"); $("app").classList.remove("hidden"); loadType("live"); }
-$("logoutBtn").onclick = ()=>{ 
-  let s = JSON.parse(localStorage.getItem("xtream_login")||"{}"); delete s.pass; 
-  localStorage.setItem("xtream_login", JSON.stringify(s)); location.reload(); 
-};
-
-/* ---------------- M3U Parser ---------------- */
-$("addM3uBtn").onclick = async () => {
-  const url = prompt("กรุณาใส่ URL ของลิ้งก์ M3U (Playlist):\n💡 พิมพ์ 'reset' เพื่อล้างลิ้งก์เก่าทั้งหมด", "");
-  if(!url) return;
-  
-  if(url.trim().toLowerCase() === "reset") {
-    S.m3uLinks = [];
-    localStorage.removeItem("m7_m3u");
-    S.m3uData = { cats:[], items:{} };
-    renderCats($("catSearch").value);
-    $("content").innerHTML = '<div class="empty">ล้างลิ้งก์ M3U สำเร็จ</div>';
-    alert("ล้างลิ้งก์ M3U ที่บันทึกไว้ทั้งหมดแล้ว!");
-    return;
-  }
-  
-  if(!S.m3uLinks.includes(url)) {
-    S.m3uLinks.push(url);
-    localStorage.setItem("m7_m3u", JSON.stringify(S.m3uLinks));
-  } else {
-    alert("มีลิ้งก์นี้อยู่แล้ว ระบบจะทำการโหลดข้อมูลอัปเดตให้ใหม่ครับ");
-  }
-  
-  $("catList").innerHTML='<div class="loading"><div class="spinner"></div>กำลังตรวจสอบ...</div>';
-
-  await loadAllM3U();
-  renderCats($("catSearch").value);
-  
-  if (S.m3uData.cats.length > 0) {
-    alert("โหลด M3U สำเร็จ!");
-    const lastCat = S.m3uData.cats[S.m3uData.cats.length - 1];
-    selectCat(lastCat.category_id);
-    setTimeout(() => {
-      $("catList").scrollTop = $("catList").scrollHeight;
-    }, 200);
-  } else {
-    alert("⚠️ โหลดลิ้งก์สำเร็จ แต่ไม่พบข้อมูลช่องรายการ\n(อาจเป็นลิ้งก์เสีย หรือเบราว์เซอร์บล็อกการเข้าถึงแบบถาวร)");
-  }
-};
-
-async function loadAllM3U() {
-  S.m3uData = { cats:[], items:{} };
-  for(let i=0; i<S.m3uLinks.length; i++){
-    let text = "";
-    let url = S.m3uLinks[i];
-    
-    try {
-      const r1 = await fetch(url);
-      if(!r1.ok) throw new Error();
-      text = await r1.text();
-    } catch(e1) {
-      try {
-        const r2 = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(url));
-        if(!r2.ok) throw new Error();
-        text = await r2.text();
-      } catch(e2) {
-        try {
-          const r3 = await fetch("https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(url));
-          if(!r3.ok) throw new Error();
-          text = await r3.text();
-        } catch(e3) {
-          console.error("M3U Load Failed:", url);
-          continue; 
-        }
-      }
-    }
-    
-    if(text && text.includes("#EXTINF")) {
-      parseM3UContent(text, i);
-    }
-  }
-}
-
-function parseM3UContent(text, srcIndex) {
-  const lines = text.split(/\r?\n/);
-  let curItem = {};
-  
-  for(let line of lines){
-    line = line.trim();
-    if(!line) continue;
-    
-    if(line.startsWith("#EXTINF:")){
-      curItem = { name: "Unknown", cover: "", group: "M3U Playlist "+(srcIndex+1), isM3U: true };
-      
-      const groupMatch = line.match(/group-title="([^"]+)"/) || line.match(/group-title=([^, ]+)/);
-      if(groupMatch) curItem.group = groupMatch[1];
-      
-      const logoMatch = line.match(/tvg-logo="([^"]+)"/) || line.match(/tvg-logo=([^, ]+)/);
-      if(logoMatch) curItem.cover = logoMatch[1];
-      
-      const commaIdx = line.indexOf(',');
-      if(commaIdx > -1){
-        curItem.name = line.substring(commaIdx + 1).trim();
-      } else {
-        curItem.name = "Channel";
-      }
-      
-    } else if(!line.startsWith("#")){
-      if(curItem.name) {
-        curItem.stream_id = line; 
-        
-        const catId = "m3u_" + srcIndex + "_" + encodeURIComponent(curItem.group || "Uncategorized").replace(/%/g, '_');
-        
-        if(!S.m3uData.cats.find(c=>c.category_id===catId)){
-          S.m3uData.cats.push({ category_id: catId, category_name: "[M3U] " + (curItem.group || "Uncategorized"), isM3U: true });
-          S.m3uData.items[catId] = [];
-        }
-        S.m3uData.items[catId].push(curItem);
-        curItem = {}; 
-      }
-    }
-  }
-}
-
-/* ---------------- Navigation & Categories ---------------- */
-document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
-  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-  t.classList.add("active"); loadType(t.dataset.type);
-});
-
-const ACT = { live:{cat:"get_live_categories",list:"get_live_streams"}, vod:{cat:"get_vod_categories",list:"get_vod_streams"}, series:{cat:"get_series_categories",list:"get_series"} };
-
-async function loadType(type){
-  S.type=type; S.catId=null;
-  $("itemSearch").style.display = type==="live" ? "none" : "";
-  $("itemSearch").value = "";
-  $("catList").innerHTML='<div class="loading"><div class="spinner"></div>กำลังโหลด...</div>'; $("content").innerHTML="";
-  try{
-    let res = await jget(api("action="+ACT[type].cat));
-    if(res && !Array.isArray(res)) res = Object.values(res);
-    S.cats = res || [];
-    
-    renderCats();
-    if(S.cats.length || S.m3uData.cats.length) selectCat(S.cats[0] ? S.cats[0].category_id : S.m3uData.cats[0].category_id);
-    else $("content").innerHTML='<div class="empty">ไม่มีหมวดหมู่</div>';
-  }catch(e){ $("catList").innerHTML='<div class="empty">ผิดพลาด<br>'+e.message+'</div>'; }
-}
-
-$("refreshBtn").onclick = async function(){
-  this.style.pointerEvents="none"; this.style.opacity="0.5";
-  S.allCache={}; const c=S.catId; await loadType(S.type); await loadAllM3U(); if(c) selectCat(c);
-  this.style.pointerEvents="auto"; this.style.opacity="1";
-};
-
-function renderCats(filter=""){
-  const f = filter.toLowerCase();
-  
-  let safeCats = Array.isArray(S.cats) ? S.cats : [];
-  let safeM3u = Array.isArray(S.m3uData.cats) ? S.m3uData.cats : [];
-  let fullList = safeCats.concat(safeM3u);
-  
-  const list = fullList.filter(c => {
-    let cName = c.category_name ? String(c.category_name) : "";
-    if(!S.showAdult && isAdult(cName)) return false;
-    return cName.toLowerCase().includes(f);
-  });
-  
-  $("catList").innerHTML = list.map(c =>
-    `<div class="cat ${c.category_id===S.catId?'active':''} ${c.isM3U?'m3u-cat':''}" data-id="${c.category_id}" title="${esc(c.category_name)}">${esc(c.category_name)}</div>`
-  ).join("") || '<div class="empty">ไม่พบ</div>';
-  
-  $("catList").querySelectorAll(".cat").forEach(el=>el.onclick=()=>selectCat(el.dataset.id));
-}
-$("catSearch").oninput = e => renderCats(e.target.value);
-
-/* ---------------- ระบบค้นหาและแบ่งหน้า ---------------- */
-let currentRenderList = [];
-const itemsPerPage = 15;
-
-async function selectCat(id){
-  S.catId = id; renderCats($("catSearch").value);
-  $("content").innerHTML='<div class="loading"><div class="spinner"></div>กำลังโหลด...</div>';
-  
-  if(String(id).startsWith("m3u_")){
-    S.items = S.m3uData.items[id] || [];
-    renderItems(S.items, false, 1);
-    return;
-  }
-  
-  try{
-    let fetched = await jget(api(`action=${ACT[S.type].list}&category_id=${id}`));
-    if(fetched && !Array.isArray(fetched)) fetched = Object.values(fetched);
-    fetched = fetched || [];
-    
-    if(S.type === "vod" || S.type === "series"){
-      fetched.sort((a,b) => {
-        let valA = parseInt(a.added || a.stream_id || a.series_id || 0);
-        let valB = parseInt(b.added || b.stream_id || b.series_id || 0);
-        return valB - valA;
-      });
-    }
-    
-    S.items = fetched;
-    $("itemSearch").value=""; 
-    renderItems(S.items, false, 1);
-  }catch(e){ $("content").innerHTML='<div class="empty">โหลดรายการไม่ได้<br>('+e.message+')</div>'; }
-}
-
-let _searchTimer=null;
-$("itemSearch").oninput = function() {
-  clearTimeout(_searchTimer);
-  _searchTimer = setTimeout(async () => {
-    const q = this.value.trim().toLowerCase();
-    if(!q) { renderItems(S.items, false, 1); return; }
-    
-    $("content").innerHTML='<div class="loading"><div class="spinner"></div>ค้นหา...</div>';
-    try {
-      if(!S.allCache) S.allCache={};
-      if(!S.allCache[S.type]) {
-         let all = await jget(api("action="+ACT[S.type].list));
-         if(all && !Array.isArray(all)) all = Object.values(all);
-         all = all || [];
-         
-         if(S.type === "vod" || S.type === "series"){
-           all.sort((a,b) => {
-             let valA = parseInt(a.added || a.stream_id || a.series_id || 0);
-             let valB = parseInt(b.added || b.stream_id || b.series_id || 0);
-             return valB - valA;
-           });
-         }
-         S.allCache[S.type] = all;
-      }
-      
-      const filtered = S.allCache[S.type].filter(it => String(it.name||it.title||"").toLowerCase().includes(q));
-      renderItems(filtered, true, 1);
-    } catch(e){ renderItems([], true, 1); }
-  }, 300);
-};
-
-function renderItems(list, isSearch, page = 1){
-  list = list || S.items;
-  currentRenderList = list; 
-  const isLive = S.type === "live"; 
-  $("content").innerHTML = "";
-  
-  if(!list.length){ $("content").innerHTML='<div class="empty">ไม่มีรายการ</div>'; return; }
-  
-  const isPaginated = (S.type === "vod" || S.type === "series");
-  let displayList = list;
-  let totalPages = 1;
-
-  if(isPaginated){
-    totalPages = Math.ceil(list.length / itemsPerPage) || 1;
-    if(page < 1) page = 1;
-    if(page > totalPages) page = totalPages;
-    const start = (page - 1) * itemsPerPage;
-    displayList = list.slice(start, start + itemsPerPage);
-  }
-
-  const grid = document.createElement("div"); 
-  grid.className = "grid";
-  displayList.forEach(it => {
-    const n = it.name||it.title||"-", ico = it.stream_icon||it.cover||"";
-    const d=document.createElement("div"); d.className="item"+(isLive?" live":"");
-    d.innerHTML=`<img class="thumb" loading="lazy" src="${esc(ico)}" onerror="this.style.visibility='hidden'"><div class="cap">${esc(n)}</div>`;
-    d.onclick = () => openItem(it); 
-    grid.appendChild(d);
-  });
-  $("content").appendChild(grid);
-
-  if(isPaginated && totalPages > 1){
-    const pg = document.createElement("div");
-    pg.className = "pagination";
-    pg.innerHTML = `
-      <button class="pg-btn" id="btnPrev" ${page === 1 ? 'disabled' : ''}>&laquo; ก่อนหน้า</button>
-      <span class="pg-info">หน้า ${page} / ${totalPages}</span>
-      <button class="pg-btn" id="btnNext" ${page === totalPages ? 'disabled' : ''}>ถัดไป &raquo;</button>
-    `;
-    $("content").appendChild(pg);
-
-    if(page > 1) $("btnPrev").onclick = () => renderItems(currentRenderList, isSearch, page - 1);
-    if(page < totalPages) $("btnNext").onclick = () => renderItems(currentRenderList, isSearch, page + 1);
-    
-    $("content").scrollTo({ top: 0, behavior: 'smooth' });
-  }
-}
-
-/* ---------------- Player ---------------- */
-function openModal(name){
-  $("playerTitle").textContent = name;
-  $("playerErr").classList.add("hidden"); $("vlcNote").classList.add("hidden");
-  $("epList").classList.add("hidden"); $("autoNextWrap").classList.add("hidden");
-  setSelect($("audioSel"),[{value:0,label:"ต้นฉบับ"}],0,false);
-  setSelect($("subSel"),[{value:-1,label:"ปิด"}],-1,false);
-  $("modal").classList.remove("hidden");
-}
-
-function openItem(it){
-  const name=it.name||it.title||"-";
-  if(it.isM3U){
-    openModal(name); play(it.stream_id, 0); 
-  } else if(S.type==="live"){
-    openModal(name); play(`${S.url}/live/${encodeURIComponent(S.user)}/${encodeURIComponent(S.pass)}/${it.stream_id}.m3u8`);
-  } else if(S.type==="vod"){
-    openModal(name); play(`${S.url}/movie/${encodeURIComponent(S.user)}/${encodeURIComponent(S.pass)}/${it.stream_id}.${it.container_extension||"mp4"}`);
-  } else {
-    openModal(name); S.series={id:it.series_id, name};
-    $("autoNextWrap").classList.remove("hidden"); $("epList").classList.remove("hidden");
-    loadSeriesEps(it.series_id);
-  }
-}
-
-async function loadSeriesEps(sid){
-  $("epList").innerHTML='<div class="loading"><div class="spinner"></div>...</div>';
-  try{
-    const d=await jget(api("action=get_series_info&series_id="+sid));
-    const eps=d.episodes||{}; S.eps=[]; let h="";
-    Object.keys(eps).sort((a,b)=>a-b).forEach(sn=>{
-      h+=`<div class="season">Season ${sn}</div>`;
-      eps[sn].forEach(ep=>{
-        const i=S.eps.length; S.eps.push({id:ep.id, ext:ep.container_extension||"mp4", title:ep.title||("ตอน "+ep.episode_num)});
-        h+=`<div class="ep" data-idx="${i}">${esc(ep.title||("ตอน "+ep.episode_num))}</div>`;
-      });
-    });
-    $("epList").innerHTML=h;
-    $("epList").querySelectorAll(".ep").forEach(el=>el.onclick=()=>playEp(parseInt(el.dataset.idx)));
-    if(S.eps.length) playEp(0);
-  }catch(e){}
-}
-function playEp(idx){
-  if(idx<0||idx>=S.eps.length)return; S.epIndex=idx; const ep=S.eps[idx];
-  $("epList").querySelectorAll(".ep").forEach((x,i)=>x.classList.toggle("active",i===idx));
-  $("playerTitle").textContent = S.series.name+" · "+ep.title;
-  play(`${S.url}/series/${encodeURIComponent(S.user)}/${encodeURIComponent(S.pass)}/${ep.id}.${ep.ext}`);
-}
-
-/* Audio & Subtitle Logic ผ่าน HLS */
-async function play(src, resTime=0){
-  const v=$("video"); S.currentSrc=src;
-  if(S.hls){S.hls.destroy();S.hls=null;}
-  if(S.shaka){try{await S.shaka.destroy();}catch(e){} S.shaka=null;}
-  v.pause(); v.removeAttribute("src"); $("vlcNote").classList.add("hidden");
-  
-  const isLive = S.type==="live" || /\.m3u8/i.test(src);
-
-  if(window.Hls && Hls.isSupported() && /\.m3u8/i.test(src)){
-    const hls = new Hls(); S.hls = hls;
-    hls.loadSource(src); hls.attachMedia(v);
-    hls.on(Hls.Events.MANIFEST_PARSED, ()=>{ v.play().catch(()=>{}); buildHlsTracks(hls); });
-    hls.on(Hls.Events.LEVEL_SWITCHED, () => buildHlsTracks(hls));
-    hls.on(Hls.Events.ERROR, (_,d)=>{ if(d.fatal) showPerr("ไม่สามารถเล่นสตรีมนี้ได้"); });
-    return;
-  }
-  
-  if(window.shaka && shaka.Player.isBrowserSupported() && !isLive){
-    try{
-      const pl = new shaka.Player(v); S.shaka = pl;
-      pl.addEventListener("error", ()=>fallBackNative(v, src));
-      pl.addEventListener("trackschanged", () => buildShakaTracks(pl));
-      await pl.load(src);
-      v.play().catch(()=>{});
-      buildShakaTracks(pl);
-      return;
-    }catch(e){ fallBackNative(v, src); return; }
-  }
-
-  fallBackNative(v, src);
-}
-
-function fallBackNative(v, src){
-  v.src = src; 
-  v.onloadedmetadata = () => buildNativeTracks(v); 
-  v.onloadeddata = () => buildNativeTracks(v); 
-  v.play().catch(()=>{});
-  v.onerror = () => showPerr("เบราว์เซอร์ไม่รองรับไฟล์วิดีโอนี้ (MKV/TS) กรุณากดปุ่ม 🎬 เปิดใน drm.player");
-}
-
-function showPerr(m){ const e=$("playerErr"); e.textContent=m; e.classList.remove("hidden"); }
-
-function setSelect(el, opts, cur, en){
-  el.innerHTML=opts.map(o=>`<option value="${o.value}" ${String(o.value)===String(cur)?"selected":""}>${esc(o.label)}</option>`).join("");
-  el.disabled=!en;
-}
-
-function buildHlsTracks(hls){
-  if(hls.audioTracks && hls.audioTracks.length>1){
-    setSelect($("audioSel"), hls.audioTracks.map((t,i)=>({value:i,label:t.name||t.lang||"เสียง "+(i+1)})), hls.audioTrack, true);
-    $("audioSel").onchange=e=>hls.audioTrack=parseInt(e.target.value);
-  } else {
-    setSelect($("audioSel"),[{value:0,label:"ต้นฉบับ"}],0,false);
-  }
-  if(hls.subtitleTracks && hls.subtitleTracks.length){
-    const opt=[{value:-1,label:"ปิด"}].concat(hls.subtitleTracks.map((t,i)=>({value:i,label:t.name||t.lang||"ซับ "+(i+1)})));
-    setSelect($("subSel"), opt, hls.subtitleTrack, true);
-    $("subSel").onchange=e=>{ const v=parseInt(e.target.value); hls.subtitleTrack=v; hls.subtitleDisplay=(v>=0); };
-  } else {
-    setSelect($("subSel"),[{value:-1,label:"ไม่มีซับ"}],-1,false);
-  }
-}
-
-function buildShakaTracks(pl){
-  const langs = pl.getAudioLanguagesAndRoles(); 
-  if(langs.length > 1){
-    const cur = (pl.getVariantTracks().find(t=>t.active)||{}).language;
-    const uniqueLangs = [...new Map(langs.map(l => [l.language, l])).values()];
-    setSelect($("audioSel"), uniqueLangs.map((l,i)=>({value:l.language,label:l.language||"เสียง "+(i+1)})), cur, true);
-    $("audioSel").onchange=e=>pl.selectAudioLanguage(e.target.value);
-  }
-  
-  const txts = pl.getTextTracks();
-  if(txts.length){
-    const opt=[{value:-1,label:"ปิด"}].concat(txts.map(t=>({value:t.id,label:t.label||t.language||"ซับ "+t.id})));
-    setSelect($("subSel"), opt, -1, true);
-    $("subSel").onchange=e=>{
-      if(e.target.value==="-1"){ pl.setTextTrackVisibility(false); return; }
-      const tr=pl.getTextTracks().find(t=>String(t.id)===e.target.value);
-      if(tr){ pl.selectTextTrack(tr); pl.setTextTrackVisibility(true); }
+    const firebaseConfig = {
+        apiKey: "AIzaSyCdcLb6eD7IsqHyMDBTNFDY1QCr9ERQch0",
+        projectId: "zhaorv",
+        appId: "1:974011347762:web:6e0ecafe1b63e64a36dd2b"
     };
-  }
-}
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-function buildNativeTracks(v){
-  let hasAudio = false;
-  let hasSub = false;
+    const app = Vue.createApp({
+        data() {
+            return {
+                loading: true, currentView: 'home', searchOpen: false, searchQuery: '', hasUpdate: false,
+                categories: [], movies: [], series: [], channels: [], playlists: [], sliderItems: [], currentSlide: 0,
+                selectedItem: null
+            }
+        },
+        computed: {
+            filteredMovies() { return this.movies.filter(m => m.title.toLowerCase().includes(this.searchQuery.toLowerCase())); },
+            filteredSeries() { return this.series.filter(s => s.title.toLowerCase().includes(this.searchQuery.toLowerCase())); },
+            filteredChannels() { return this.channels.filter(c => c.name.toLowerCase().includes(this.searchQuery.toLowerCase())); },
+            filteredPlaylists() { return this.playlists.filter(p => p.name.toLowerCase().includes(this.searchQuery.toLowerCase())); }
+        },
+        mounted() {
+            this.loadData();
+            this.checkUpdates();
+        },
+        methods: {
+            async loadData() {
+                try {
+                    const catSnap = await db.collection('categories').get();
+                    this.categories = catSnap.docs.map(d => ({id:d.id, ...d.data()}));
 
-  const at = v.audioTracks || v.mozAudioTracks || v.webkitAudioTracks;
-  if(at && at.length > 1){
-    hasAudio = true;
-    const opt=[]; let currentActive = 0;
-    for(let i=0;i<at.length;i++) {
-      opt.push({value:i,label:at[i].label||at[i].language||"เสียง "+(i+1)});
-      if(at[i].enabled) currentActive = i;
-    }
-    setSelect($("audioSel"), opt, currentActive, true);
-    $("audioSel").onchange=e=>{ for(let i=0;i<at.length;i++) at[i].enabled=(i==e.target.value); };
-  }
+                    const mSnap = await db.collection('videos').where('type','==','movie').where('active', '==', true).get();
+                    this.movies = mSnap.docs.map(d => ({id:d.id, ...d.data()}));
+                    
+                    const sSnap = await db.collection('videos').where('type','==','tvshow').where('active', '==', true).get();
+                    this.series = sSnap.docs.map(d => ({id:d.id, ...d.data()}));
+                    
+                    const cSnap = await db.collection('liveTV').get();
+                    this.channels = cSnap.docs.map(d => ({id:d.id, ...d.data()}));
+                    
+                    const pSnap = await db.collection('playlists').get();
+                    this.playlists = pSnap.docs.map(d => ({id:d.id, ...d.data()}));
+                    
+                    this.sliderItems = [...this.movies.slice(0,5), ...this.series.slice(0,5)];
+                    setInterval(() => { this.currentSlide = (this.currentSlide + 1) % this.sliderItems.length; }, 5000);
+                } catch(e) { console.error(e); } 
+                finally { this.loading = false; }
+            },
+            
+            getCategoryContent(catName) { return [...this.movies, ...this.series].filter(i => i.category === catName); },
+            getCategoryChannels(catName) { return this.channels.filter(ch => ch.category === catName); },
+            
+            async checkUpdates() {
+                const doc = await db.collection('app_settings').doc('version_control').get();
+                if(doc.exists && parseFloat(doc.data().latest_version) > 1.0) this.hasUpdate = true;
+            },
 
-  if(v.textTracks && v.textTracks.length){
-    hasSub = true;
-    const opt=[{value:-1,label:"ปิด"}];
-    let currentSub = -1;
-    for(let i=0;i<v.textTracks.length;i++){ 
-      if(v.textTracks[i].kind !== "metadata") {
-        opt.push({value:i,label:v.textTracks[i].label||v.textTracks[i].language||"ซับ "+(i+1)}); 
-        if(v.textTracks[i].mode === "showing") currentSub = i;
-        else v.textTracks[i].mode="hidden"; 
-      }
-    }
-    if(opt.length > 1) {
-      setSelect($("subSel"), opt, currentSub, true);
-      $("subSel").onchange=e=>{ 
-        for(let i=0;i<v.textTracks.length;i++) {
-          if(v.textTracks[i].kind !== "metadata") v.textTracks[i].mode=(i==e.target.value)?"showing":"hidden"; 
+            openDetails(item) { this.selectedItem = item; },
+
+ playVideo(url) {
+    if (!url) return alert('No URL');
+    // We send the URL directly in the web address
+    window.location.href = 'player.html?url=https://sugus25.github.io/live-streame/' + encodeURIComponent(url);
+},
+            
+            triggerAndroid(action) {
+                if(typeof window.Android !== 'undefined') {
+                    window.Android.performAction(action);
+                } else {
+                    alert("Triggered: " + action);
+                }
+            },
+
+            imgError(e) { e.target.src="https://via.placeholder.com/105x155/222/00e600?text=WIE"; }
         }
-      };
-    }
-  } 
-  
-  if (S.currentSrc && !/\.m3u8/i.test(S.currentSrc) && (!hasAudio || !hasSub)) {
-    const n = $("vlcNote");
-    n.innerHTML = "💡 วิดีโอนี้อาจมีหลายเสียง/ซับไตเติล แต่ข้อจำกัดของเบราว์เซอร์ไม่สามารถแยกแทร็กได้ 100% แนะนำให้ใช้ปุ่ม <b>📱 Google Video</b> หรือ <b>🎬 เปิดใน VLC</b> เพื่อเลือกภาษาครับ";
-    n.classList.remove("hidden");
-  }
-}
-
-$("closeBtn").onclick = ()=>{ $("video").pause(); $("modal").classList.add("hidden"); };
-
-/* ==============================================================
-   ฟังก์ชันควบคุมปุ่มเปิดแอป (VLC, Google Video, Windows)
-   ============================================================== */
-
-const isAndroid = /Android/i.test(navigator.userAgent);
-const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-// ฟังก์ชันดึง Intent เจาะจงแอป
-function getAndroidIntent(pkg) {
-  let m = S.currentSrc.match(/^(https?):\/\/(.*)$/i);
-  let scheme = m ? m[1] : "http";
-  let path = m ? m[2] : S.currentSrc;
-  return `intent://${path}#Intent;scheme=${scheme};package=${pkg};type=video/*;end`;
-}
-
-// ฟังก์ชันซ่อนโหลดแอป
-function openProtocol(url) {
-  const a = document.createElement("a");
-  a.href = url;
-  a.target = "_top";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  
-  $("vlcNote").innerHTML = "กำลังส่งไปเปิดในแอป... <br><small style='color:var(--muted);'>วิดีโอบนเว็บยังคงเล่นตามปกติ (หากแอปไม่เด้งขึ้นมา แปลว่ายังไม่ได้ติดตั้งแอปนั้นครับ)</small>";
-  $("vlcNote").classList.remove("hidden");
-}
-
-
-// 1. ปุ่ม "🎬 เปิดใน drm.player"
-$("vlcBtn").onclick = ()=>{
-  if(!S.currentSrc) return;
-  if (isAndroid) {
-    openProtocol(getAndroidIntent("org.drm.player"));
-  } else if (isIOS) {
-    openProtocol("vlc://" + S.currentSrc);
-  } else {
-    // บน PC ดาวน์โหลด .m3u
-    const m3u=`#EXTM3U\n#EXTINF:-1,${$("playerTitle").textContent}\n${S.currentSrc}\n`;
-    const b=new Blob([m3u],{type:"audio/x-mpegurl"}), a=document.createElement("a");
-    a.href=URL.createObjectURL(b); a.download="play.m3u"; 
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    $("vlcNote").innerHTML="ดาวน์โหลดไฟล์ .m3u แล้ว เปิดด้วย <b>VLC</b> บนเครื่องคอมพิวเตอร์เพื่อรับชม"; 
-    $("vlcNote").classList.remove("hidden");
-  }
-}; 
-
-// 2. ปุ่ม "📱 yamby (แอปอื่น)
-$("extBtn").onclick = ()=>{
-  if(!S.currentSrc) return;
-  if (isAndroid) {
-    openProtocol(getAndroidIntent("com.hush.yamby"));
-  } else {
-    openProtocol(S.currentSrc);
-  }
-}; 
-
-// 3. ปุ่ม "🖥️ เปิดใน yamby"
-$("winBtn").onclick = ()=>{
-   if(!S.currentSrc) return;
-   openProtocol("xtplay://" + S.currentSrc);
-};
-
-// 4. ปุ่ม "📋 คัดลอกลิงก์"
-$("copyBtn").onclick=async()=>{ 
-  try{ 
-    await navigator.clipboard.writeText(S.currentSrc); 
-    alert("คัดลอกลิ้งก์สำเร็จแล้ว!"); 
-  }catch(e){
-    prompt("คัดลอกลิ้งก์ด้านล่าง:", S.currentSrc);
-  } 
-};
-
+    }).mount('#app');
 </script>
-
-
 </body>
+</html>
